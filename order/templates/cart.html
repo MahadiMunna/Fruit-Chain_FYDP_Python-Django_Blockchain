@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load cart %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-success text-center mb-5">Your Shopping Cart</h2>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr class="text-center">
+                    <th>Item Name</th>
+                    <th>Price</th>
+                    <th>Quantity (kg)</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if carts %}
+                {% for cart in carts %}
+                <tr class="text-center">
+                    <td>{{ cart.item.name }}</td>
+                    <td>{{ cart.item.price }}</td>
+                    <td><a class="btn btn-outline-secondary p-1" href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}">-</a>  {{ cart.quantity }}  <a class="btn btn-outline-secondary p-1" href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}">+</a></td>
+                    <td>{{ cart.get_total }}৳</td>
+                    <td><a class="btn btn-danger p-1" href="{% url 'remove' pk=cart.item.id  %}">Remove</a></td>
+                </tr>
+                {% endfor %}
+                <tr class="text-center border border-3">
+                    <td colspan="3"><b>Total Cost</b></td>
+                    <td class="fw-bold" id="total-amount" colspan="2">{{ order.get_totals }}৳</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td class="text-center fw-bold text-danger" colspan="5">Your Cart is empty! Add fruits for order.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        {% if carts %}
+        <div class="d-flex justify-content-end gap-2">
+            <a class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
+        </div>
+        {% endif %}
+</div>
+{% endblock %}

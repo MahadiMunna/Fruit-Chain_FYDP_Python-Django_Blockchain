@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_title %}Fruit Details{% endblock %}
+{% block body %}
+<!-- fruit details  -->
+<div class="my-5 container mx-auto">
+  <div class="d-flex flex-lg-row flex-column gap-3 justify-content-center align-items-center">
+    <div class="col w-auto me-lg-3">
+        {% if object.image %}
+            <img src="{{object.image.url}}" class="w-auto rounded" alt="...">
+            {% else %}
+            <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded" alt="...">
+            {% endif %}
+    </div>
+    <div class="col w-auto" style="max-width: 700px;">
+      <h3 class="text-success">{{object.name}}</h3>
+      <small class="text-secondary">{{object.timestamp}}</small>
+      <p>{{object.description}}</p>
+      <div class="mb-1">
+        <small class="fw-bold">Fruit From: {{object.location}}</small><br>
+        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br>
+        <small class="fw-bold">Price:
+            {{object.price}}৳/kg</small><br><br>
+        <a class="btn p-1 btn-primary" href="{% url 'add-to-cart' object.id %}">Add to Cart</a>
+    </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

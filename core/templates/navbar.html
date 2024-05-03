@@ -1,0 +1,17 @@
+<nav>
+    <h3 class="mb-5 text-center">Fruit Sell</h3>
+    <div>
+        <ul class="list-unstyled d-flex flex-column align-items-center">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'home' %}">Fruits</a></li>
+            {% if request.user.is_authenticated %}
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+            <li><a href="{% url 'signup' %}">Signup</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
