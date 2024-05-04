@@ -20,6 +20,8 @@
             {% elif type == "Change Password" %}
             <a class="text-decoration-none" href="{% url 'set_pass' %}">Forgot your old password?</a><br><br>
             <button class="btn btn-success">Submit</button>
+            {% else %}
+            <button class="btn btn-success">Submit</button> 
             {% endif %}
         </form>
     </div>

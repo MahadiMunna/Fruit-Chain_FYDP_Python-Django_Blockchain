@@ -26,6 +26,7 @@ def add_to_cart(request, pk):
         order = Order(user=request.user)
         order.save()
         order.order_items.add(order_item[0])
+        messages.success(request,f'{item.name} Successfully added to cart!')
         referer_url = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(referer_url)
 

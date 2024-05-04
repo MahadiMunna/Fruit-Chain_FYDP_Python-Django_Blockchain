@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-
+from .models import VendorAccount
 
 # Create your views here.
 class UserRegistrationView(FormView):
@@ -94,4 +94,24 @@ def forgot_pass(request):
         return render(request, 'form.html', {'form': form, 'type':'Set a new password'})
     else:
         return redirect('signup')
-  
+def vendor_registration(request):
+    if request.method == 'POST':
+        form = forms.VendorRegistrationForm(request.POST)
+        if form.is_valid():
+            NID_number = form.cleaned_data.get("NID_number")
+            phone_number = form.cleaned_data.get("phone_number")
+            address = form.cleaned_data.get("address")
+            user = request.user
+            VendorAccount.objects.create(
+                NID_number=NID_number,
+                phone_number=phone_number,
+                address=address,
+                user=user,
+            )
+            messages.success(request, 'Successfully registered as a vendor!')
+            return redirect('profile')
+    else:
+        form = forms.VendorRegistrationForm()
+    return render(request, 'form.html', {'form': form, 'type':'Vendor Registration'})
+
+

@@ -44,10 +44,6 @@ class CheckoutTemplateView(TemplateView):
                 form.save()
                 pay_method = pay_form.save()
                 
-                if not saved_address.form_validation():
-                    print("Payment")
-                    return redirect('checkout')
-                
                 if pay_method.payment_method == 'Cash on delivery':
                     order_qs = Order.objects.filter(user=request.user, ordered=False)
                     order = order_qs[0]

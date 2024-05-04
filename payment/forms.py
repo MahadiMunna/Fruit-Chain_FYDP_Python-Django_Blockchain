@@ -10,6 +10,14 @@ class BillingAddressForm(forms.ModelForm):
         widgets = {
           'address': forms.Textarea(attrs={'rows':3}),
         }
+    def __init__(self, *args, **kwargs):
+        super(BillingAddressForm, self).__init__(*args, **kwargs)
+        for field_name in self.fields:
+          self.fields[field_name].required = True
+        
+        self.fields['user'].label = "User name"
+        self.fields['user'].disabled = True
+        self.fields['user'].required = False 
 
 class PaymentMethodForm(forms.ModelForm):
     class Meta:

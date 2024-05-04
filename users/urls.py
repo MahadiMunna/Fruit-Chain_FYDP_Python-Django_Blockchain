@@ -9,4 +9,5 @@ urlpatterns = [
     path('edit_profile/',views.UserAccountUpdateView.as_view(), name='edit_profile'),
     path('change_password/', views.pass_change, name='change_pass'),
     path('forgot_password/', views.forgot_pass, name='set_pass'),
+    path('vendor-registration/', views.vendor_registration, name='vendor_registration'),
 ]
