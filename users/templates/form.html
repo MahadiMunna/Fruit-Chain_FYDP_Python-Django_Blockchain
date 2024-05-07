@@ -9,7 +9,7 @@
             {% csrf_token %}
             {{form | crispy}}
             {% if type == "Login" %}
-            <p>New here? <a href="{% url 'signup' %}">Signup Now!</a></p>
+            <p>New here? <a href=>Signup Now!</a></p>
             <button class="btn btn-success">Submit</button>
             {% elif type == "Signup" %}
             <p>Already have an account? <a href="{% url 'login' %}">Login Now!</a></p>

@@ -1,43 +1,218 @@
 <!-- checkout.html -->
 {% extends 'base.html' %}
+{% load cart %}
+{% load static %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center text-success mb-5">Checkout</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Order Detail</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in order_item %}
-                    <tr>
-                        <td>{{ item.item.name }}</td>
-                        <td>{{ item.get_total }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <h3>Total Price: {{ order_total }}</h3>
+    <h2 class="btn btn-dark text-center w-100 shadow-lg">Checkout</h2>
+</div>
+<div class="d-flex container justify-content-between">
+    
+    <div style="width: 47.5%;" class="mt-5">
+        <h2 class="btn btn-dark text-center  w-100 shadow-lg">Your Shopping Cart</h2>
 
-        </div>
-        <div class="col-md-6">
-            <h3>Shipping Details</h3>
-            <form action="" method="post">
-                {% csrf_token %}
-
-                {{billing_address | crispy}}
-                {{payment_method | crispy}}
-
-                <button type="submit" class="btn btn-primary">Place Order</button>
-            </form>
+        <table class="table table-bordered table-striped shadow-lg rounded">
+            <thead class="bg-primary text-white">
+                <tr class="text-center">
+                    <th>Image</th>
+                    <th>Item Name</th>
+                    <th>Price</th>
+                    <th>Quantity (kg)</th>
+                    <th>Total</th>
+                    <th>Remove Item</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if carts %}
+                {% for cart in carts %}
+                <tr class="text-center">
+                    <td>
+                        {% if cart.item.image %}
+                        <img style="width: 50px; height: 35px;" src="{{ cart.item.image.url }}"
+                            class="img-fluid rounded" alt="Product Image">
+                        {% else %}
+                        <img style="width: 50px; height: 35px;" src="{% static './images/No-Image-Placeholder.svg' %}"
+                            class="img-fluid rounded" alt="No Image">
+                        {% endif %}
+                    </td>
+                    <td>{{ cart.item.name }}</td>
+                    <td>{{ cart.item.price }}৳</td>
+                    <td>
+                        <div class="text-center">
+                                <p class="m-0">
+                                    <span class="input-group-btn">
+                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}"
+                                            class="btn btn-outline-secondary btn-sm">-</a>
+                                    </span>
+                                    <input style="width: 30px;" type="text" class="text-center" value="{{ cart.quantity }}" readonly>
+                                    <span class="input-group-btn">
+                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}"
+                                            class="btn btn-outline-secondary btn-sm">+</a>
+                                    </span>
+                                </p>
+                        </div>
+                    </td>
+                    <td>{{ cart.get_total }}৳</td>
+                    <td><a href="{% url 'remove' pk=cart.item.id %}" class="btn btn-danger btn-sm">Remove</a></td>
+                </tr>
+                {% endfor %}
+                <tr class="text-center bg-light">
+                    <td colspan="4"><b>Total Cost</b></td>
+                    <td colspan="2"><b>{{ order.get_totals }}৳</b></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td class="text-center fw-bold text-danger" colspan="6">Your Cart is empty! Add fruits for order.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <table class="table table-bordered table-striped shadow-lg rounded ">
+            <thead class="text-center">
+                <tr>
+                    <h2 style="width: 100%;" class="text-center btn btn-dark mt-5" colspan="2">Order summary</h2>
+                </tr>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% for item in order_item %}
+                <tr>
+                    <td>{{ item.item.name }}</td>
+                    <td>{{ item.get_total }}৳</td>
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td>Sub Total</td>
+                    <td>{{ order_total }}৳</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="width: 47.5%;">
+        <div class="mt-5">
+            <h2 class="btn btn-dark text-center w-100 shadow-lg">Shipping Details</h2>
+                <div class="form d-flex justify-content-center align-items-center">
+                    <div class="d-flex flex-column justify-content-center p-4 rounded rounded shadow-lg" style=" background: #F2F2F2;">
+                        <form enctype="multipart/form-data" action="" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-between">
+                                <!-- Full name -->
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_name">Customer Name:</label>
+                                    <input type="text" id="id_name" class="input-field" placeholder="Enter your first name" name="full_name" {% if billing_address.instance.full_name %} value="{{billing_address.instance.full_name}}" {% else %} value="{{request.user.first_name}} {{request.user.last_name}}" {% endif %} required>
+                                </div>
+                                <!-- Phone -->
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_phone">Phone Number:</label>
+                                    <input type="text" id="id_phone" class="input-field" placeholder="Enter your phone number" {% if billing_address.instance.phone_number %} value="{{billing_address.instance.phone_number}}" {% endif %} name="phone_number" autocomplete="off" required>
+                                </div>
+                            </div>
+                                <!-- Address -->
+                            <div class="input-box">
+                                <label for="id_address">Address:</label>
+                                <input  id="id_address" class="input-field p-2" placeholder="Enter your address" name="address" autocomplete="off" {% if billing_address.instance.address %} value="{{billing_address.instance.address}}" {% endif %} required></input>
+                            </div>
+                            <!-- Division -->
+                            <div class="d-flex justify-content-between">
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_division">Division:</label>
+                                    <select id="id_division" class="input-field" name="division" required>
+                                        {% if billing_address.instance.division %}
+                                        <option value="{{billing_address.instance.division}}" >{{billing_address.instance.division}}</option>
+                                        {% endif %}
+                                        <option hidden>Select your division</option>
+                                        <option value="Dhaka">Dhaka</option>
+                                        <option value="Chattogram">Chattogram</option>
+                                        <option value="Rajshahi">Rajshahi</option>
+                                        <option value="Khulna">Khulna</option>
+                                        <option value="Barishal">Barishal</option>
+                                        <option value="Sylhet">Sylhet</option>
+                                        <option value="Rangpur">Rangpur</option>
+                                        <option value="Mymensingh">Mymensingh</option>
+                                    </select>
+                                </div>
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_city">City:</label>
+                                    <select id="id_city" class="input-field" name="city" required>
+                                        {% if billing_address.instance.city %}
+                                        <option value="{{billing_address.instance.city}}" >{{billing_address.instance.city}}</option>
+                                        {% endif %}
+                                        <option value="" hidden>Select division first</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_postal_code">Postal Code:</label>
+                                    <input type="text" id="id_postal_code" class="input-field" name="postal_code" {% if billing_address.instance.postal_code %}
+                                    value="{{billing_address.instance.postal_code}}"
+                                    {% endif %} placeholder="Enter your postal code"  autocomplete="off" required>
+                                </div>
+                                <div style="width: 47.5%;" class="input-box">
+                                    <label for="id_payment_method">Payment Method:</label>
+                                    <select id="id_payment_method" class="input-field" name="payment_method" required>
+                                        <option value="" hidden>Select payment method</option>
+                                        <option value="Cash on delivery">Cash on delivery</option>
+                                        <option value="SSLCOMMERZ">SSLCOMMERZ</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <input class="btn btn-outline-dark w-100 p-2 fw-bold my-3" type="submit" value="Place Order">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    // City data based on division
+    const cityData = {
+        Dhaka: ["Dhaka", "Faridpur", "Gazipur", "Gopalganj", "Jamalpur", "Kishoreganj", "Madaripur", "Manikganj", "Munshiganj", "Mymensingh", "Narayanganj", "Narsingdi", "Netrakona", "Rajbari", "Shariatpur", "Sherpur", "Tangail"],
+        Chattogram: ["Brahmanbaria", "Chandpur", "Chattogram", "Cumilla", "Cox's Bazar", "Feni", "Khagrachari", "Lakshmipur", "Noakhali", "Rangamati"],
+        Rajshahi: ["Bogura", "Chapai Nawabganj", "Joypurhat", "Naogaon", "Natore", "Pabna", "Rajshahi", "Sirajganj"],
+        Khulna: ["Bagerhat", "Chuadanga", "Jessore", "Jhenaidah", "Khulna", "Kushtia", "Magura", "Meherpur", "Narail", "Satkhira"],
+        Barishal: ["Barishal", "Bhola", "Jhalokati", "Patuakhali", "Pirojpur"],
+        Sylhet: ["Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"],
+        Rangpur: ["Dinajpur", "Gaibandha", "Kurigram", "Lalmonirhat", "Nilphamari", "Panchagarh", "Rangpur", "Thakurgaon"],
+        Mymensingh: ["Jamalpur", "Mymensingh", "Netrokona", "Sherpur"]
+    };
+
+    // Function to populate cities based on selected division
+    function populateCities() {
+        const divisionSelect = document.getElementById("id_division");
+        const citySelect = document.getElementById("id_city");
+        const selectedDivision = divisionSelect.value;
+
+
+        // Clear city options
+        citySelect.innerHTML = '<option value="">Select your city</option>';
+        // Populate cities based on selected division
+        if (selectedDivision && cityData[selectedDivision]) {
+            cityData[selectedDivision].forEach(city => {
+                const option = document.createElement("option");
+                option.value = city;
+                option.text = city;
+                citySelect.appendChild(option);
+            });
+        }
+    }
+    // Event listener for division selection
+    document.getElementById("id_division").addEventListener("change", populateCities);
+
+    // Prevent form submission for demonstration purposes
+    document.getElementById("cityForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        alert("Form submitted!"); // You can replace this with your own submission logic
+    });
+</script>
 {% endblock %}

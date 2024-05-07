@@ -5,9 +5,9 @@
 <!-- fruit details  -->
 <div class="my-5 container mx-auto">
   <div class="d-flex flex-lg-row flex-column gap-3 justify-content-center align-items-center">
-    <div class="col w-auto me-lg-3">
+    <div class="col me-lg-3">
         {% if object.image %}
-            <img src="{{object.image.url}}" class="w-auto rounded" alt="...">
+            <img src="{{object.image.url}}" class="w-100 rounded" alt="...">
             {% else %}
             <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded" alt="...">
             {% endif %}

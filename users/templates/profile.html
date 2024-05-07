@@ -9,13 +9,13 @@
     {% if request.user.account.profile_image %}
     <img class="w-25 rounded-4 shadow-lg" src="{{request.user.account.profile_image.url}}" class="img-fluid rounded-start" alt="...">
     {% else %}
-    <img class="w-25 rounded-4 shadow-lg" src="{% static './image/profile.png' %}" class="img-fluid rounded-start"
+    <img class="w-25 rounded-4 shadow-lg" src="{% static './images/profile.png' %}" class="img-fluid rounded-start"
       alt="...">
     {% endif %}
     <br><br>
     <span class="text-primary fs-2">{{request.user.first_name}} {{request.user.last_name}}</span><br><br>
     
-    <a class="btn btn-primary" href="{% url 'edit_profile' %}">Edit Profile</a>
+    <a class="btn btn-primary" href="{% url 'update_profile' %}">Edit Profile</a>
   </div>
 
 {% endblock %}

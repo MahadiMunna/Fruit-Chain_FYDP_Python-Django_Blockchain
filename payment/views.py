@@ -14,6 +14,13 @@ from django.contrib import messages
 # Create your views here.
 class CheckoutTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
+        carts = Cart.objects.filter(user=request.user, purchased=False)
+        orders = Order.objects.filter(user=request.user, ordered=False)
+        if carts.exists() and orders.exists():
+            order = orders[0]
+            context = {
+                
+            }
         saved_address = BillingAddress.objects.get_or_create(user=request.user or None)
         saved_address = saved_address[0]
         form = BillingAddressForm(instance=saved_address)
@@ -23,6 +30,8 @@ class CheckoutTemplateView(TemplateView):
         order_total = order_qs[0].get_totals()
 
         context = {
+            'carts':carts,
+            'order':order,
             'billing_address':form,
             'payment_method':payment_method,
             'order_item':order_item,

@@ -39,3 +39,8 @@ class Order(models.Model):
             total += float(order_item.get_total())
 
         return total
+    def __str__(self):
+        order_status = 'Order Pending'
+        if self.ordered:
+            order_status = 'Ordered'
+        return f'{self.user.first_name}-{order_status}'
