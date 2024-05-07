@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Vendor(models.Model):
@@ -19,7 +20,16 @@ class FruitModel(models.Model):
     price=models.DecimalField(max_digits=8, decimal_places=2)
     discount=models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
     timestamp=models.DateTimeField(auto_now=True)
+    stocked_out = models.BooleanField(default=False)
+    flash_sale = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.name} from {self.location}"
 
+class FavouriteFruit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    fruit = models.ForeignKey(FruitModel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username}'s favorite: {self.fruit.name}"
+   

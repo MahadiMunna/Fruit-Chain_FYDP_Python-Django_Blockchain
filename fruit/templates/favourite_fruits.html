@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Home - Fruit sell{% endblock %}
+
+{% block body %}
+{% load static %}
+<div class="container mx-auto ">
+    <h3 class="text-center my-4">Available Fruits</h3>
+    <div class="row justify-content-around">
+        {% for favaurite_fruit in favorite_fruits %}
+        <div class="card mb-3 shadow" style="width: 370px; height: fit-content;">
+            <div class="row">
+                <div class="col-4 d-flex justify-content-center align-items-center">
+                    {% if favaurite_fruit.fruit.image %}
+                    <img class="card-img p-2" src="{{favaurite_fruit.fruit.image.url}}" class="img-fluid rounded-start" alt="...">
+                    {% else %}
+                    <img class="card-img" src="{% static './images/No-Image-Placeholder.svg' %}"
+                        class="img-fluid rounded-start" alt="...">
+                    {% endif %}
+                    
+                </div>
+                <div style="background-color: #c9cacb;" class="col-8">
+                    <div class="p-2">
+                        <h6 class="card-title">{{favaurite_fruit.fruit.name}}</h6>
+                        <small class="card-text ">{{favaurite_fruit.fruit.description | truncatewords:8}} <a class="text-decoration-none"
+                                href="{% url 'details' id=favaurite_fruit.fruit.id %}">see more</a></small><br>
+                        <small class="text-secondary fw-bold">From: {{favaurite_fruit.fruit.location}}</small><br>
+                        <small class="text-secondary fw-bold">Supply date: {{favaurite_fruit.fruit.supply_date}}</small><br>
+                        <small class="fw-bold">Price: {{favaurite_fruit.fruit.price}}৳/kg</small><br>
+                        <a class="btn p-1 btn-dark" href="{% url 'remove_favourite' favaurite_fruit.id %}">Remove from favourite</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+</div>
+{% endblock %}

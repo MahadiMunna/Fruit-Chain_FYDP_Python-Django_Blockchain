@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views import View
 from django.views.generic import DetailView
-from fruit.models import FruitModel, Vendor
+from fruit.models import FruitModel, Vendor, FavouriteFruit
 from django.contrib import messages
 from .forms import FruitForm, VendorForm
+from django.views.generic import TemplateView
 
 # Create your views here.
 class DetailFruitView(DetailView):
@@ -12,7 +14,6 @@ class DetailFruitView(DetailView):
 
 
 def add_fruit(request):
-    vendors = Vendor.objects.all()
     if request.method == 'POST':
         fruit_form = FruitForm(request.POST, request.FILES)
 
@@ -25,8 +26,6 @@ def add_fruit(request):
             supply_date = fruit_form.cleaned_data.get("supply_date")
             price = fruit_form.cleaned_data.get("price")
             discount = fruit_form.cleaned_data.get("discount")
-
-            
             FruitModel.objects.create(
                 name=name,
                 description=description,
@@ -42,8 +41,28 @@ def add_fruit(request):
     else:
         fruit_form = FruitForm()
 
-        return render(request, 'add_fruit.html', {'form': fruit_form, 'vendors': vendors})
-    return render(request, 'add_fruit.html', {'form': fruit_form, 'vendors': vendors})
+        return render(request, 'add_fruit.html', {'form': fruit_form})
+    return render(request, 'add_fruit.html', {'form': fruit_form})
+
+class EditFruitView(View):
+    template_name = 'edit_fruit.html'
+    pk_url_kwarg = 'id'
+
+    def get(self, request, *args, **kwargs):
+        fruit_id = kwargs.get(self.pk_url_kwarg)
+        fruit_instance = get_object_or_404(FruitModel, id=fruit_id)
+        form = FruitForm(instance=fruit_instance)
+        return render(request, self.template_name, {'form': form, 'fruit_instance': fruit_instance})
+
+    def post(self, request, *args, **kwargs):
+        fruit_id = kwargs.get(self.pk_url_kwarg)
+        fruit_instance = get_object_or_404(FruitModel, id=fruit_id)
+        form = FruitForm(request.POST, request.FILES, instance=fruit_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(self.request, 'Fruit post updated successfully!')
+            return redirect('home')
+        return render(request, self.template_name, {'form': form})
 
 def add_vendor(request):
     vendor_form = VendorForm()
@@ -66,3 +85,50 @@ def add_vendor(request):
         else:
             return render(request, 'add_vendor.html', {'form': vendor_form })
     return render(request, 'add_vendor.html', {'form': vendor_form })
+
+def make_stocked_out(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    fruit.stocked_out = True
+    fruit.flash_sale = False
+    fruit.save()
+    return redirect('home')
+
+def archive_fruits(request):
+    data = FruitModel.objects.filter(stocked_out=True)
+    return render(request, 'archive_fruits.html', {'data':data})
+
+def move_to_regular(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    fruit.stocked_out = False
+    fruit.save()
+    return redirect('archive')
+
+def add_to_flash_sale(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    fruit.flash_sale = True
+    fruit.save()
+    return redirect('home')
+
+def flash_sale_fruits(request):
+    data = FruitModel.objects.filter(flash_sale=True)
+    return render(request, 'flash_sale.html', {'data':data})
+
+def make_regular_sale(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    fruit.flash_sale = False
+    fruit.save()
+    return redirect('flash_sale_fruits')
+
+def add_to_favorites(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    FavouriteFruit.objects.get_or_create(user=request.user, fruit=fruit)
+    return redirect('home')
+
+def favourite_fruits(request):
+    favorite_fruits = FavouriteFruit.objects.filter(user=request.user)
+    return render(request, 'favourite_fruits.html', {'favorite_fruits': favorite_fruits})
+
+def remove_from_favourites(request, id):
+    favorite_fruit = get_object_or_404(FavouriteFruit, id=id, user=request.user)
+    favorite_fruit.delete()
+    return redirect('favourite')

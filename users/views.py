@@ -46,7 +46,7 @@ class UserAccountUpdateView(View):
 
     def get(self, request):
         form = forms.EditProfile(instance=request.user)
-        return render(request, self.template_name, {'form': form, 'type':'Edit Profile'})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = forms.EditProfile(request.POST, request.FILES, instance=request.user)

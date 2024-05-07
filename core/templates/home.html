@@ -28,9 +28,9 @@
                         <small class="text-secondary fw-bold">From: {{fruit.location}}</small><br>
                         <small class="text-secondary fw-bold">Supply date: {{fruit.supply_date}}</small><br>
                         <small class="fw-bold">Price: {{fruit.price}}৳/kg</small><br>
-                        <a class="btn p-1 btn-dark" href="{% url 'add-to-cart' fruit.id %}">Edit Post</a>
-                        <a class="btn p-1 btn-dark" href="{% url 'add-to-cart' fruit.id %}">Add to Flashsell</a>
-                        <a class="btn p-1 btn-dark" href="{% url 'add-to-cart' fruit.id %}">Make stock Out</a>
+                        <a class="btn p-1 btn-dark" href="{% url 'edit_fruit' id=fruit.id %}">Edit Post</a>
+                        <a class="btn p-1 btn-dark" href="{% url 'flash_sale' fruit.id %}">Add to Flashsell</a>
+                        <a class="btn p-1 btn-dark" href="{% url 'stocked_out' fruit.id %}">Make stock Out</a>
                     </div>
                 </div>
             </div>
@@ -60,6 +60,7 @@
                             <small class="fw-bold">Price:
                                 {{fruit.price}}৳/kg</small>
                             <a class="btn p-1 btn-dark" href="{% url 'add-to-cart' fruit.id %}">Add to Cart</a>
+                            <a class="btn p-1 btn-dark" href="{% url 'add_to_favourite' fruit.id %}">Add to Favourite</a>
                         </div>
                     </div>
                 </div>

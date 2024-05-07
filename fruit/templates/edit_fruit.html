@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form d-flex justify-content-center align-items-center my-3">
+    <div class="d-flex flex-column justify-content-center p-5 rounded rounded shadow-lg" style="width: 640px;  background: #e9e8e8;">
+        <div class="text-center fw-bold mb-3 fs-1">
+            <header>Add Fruit</header>
+        </div>
+        <form enctype="multipart/form-data" action="" method="POST">
+            {% csrf_token %}            
+            <!-- fruit Name -->
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error!</strong> Please correct the following errors:
+                <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}:{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div  class="d-lg-flex justify-content-between">
+                <div style="width: 47.5%;" class="input-box">
+                    <label for="id_name">Fruit name:</label>
+                    <input type="text" id="id_name" class="input-field" placeholder="Enter fruit name" value="{{ form.instance.name }}" name="name" autocomplete="off" >
+                </div>
+                <div style="width: 47.5%;" class="input-box">
+                    <label for="id_location">Fruit from:</label>
+                    <input type="text" id="id_location" class="input-field" placeholder="Enter fruit location" value="{{ form.instance.location }}" name="location" autocomplete="off" >
+                </div>
+            </div>
+            <!-- Description -->
+            <div class="input-box">
+                <label for="id_description">Fruit description:</label>
+                <input type="description" id="id_description" class="input-field" placeholder="Enter fruit description" value="{{ form.instance.description }}" name="description" autocomplete="off" >
+            </div>
+            <!-- Fruit Image -->
+            {% if form.instance.image %}
+            <img id="previewImage" class="uploaded-image" src="{{ form.instance.image.url }}" alt="Preview Image">
+            {% else %}
+            <img id="previewImage" class="uploaded-image" src="{{ form.instance.image.url }}" alt="Preview Image">
+            {% endif %}
+            <div class="d-flex justify-content-between">
+                <div style="width: 47.5%;" class="input-box">
+                    <label for="uploadImage">Fruit Image:</label>
+                    <input type="file" id="uploadImage" class="input-field" name="image" onchange="displayImage()">
+                    <label class="up-image-label overflow-hidden" for="uploadImage">
+                        <i class="fa-solid fa-upload me-2"></i>
+                        {% if form.instance.image %}
+                        <span class="image-label ">{{ form.instance.image.name }}</span>
+                        {% else %}
+                        <span class="image-label ">Upload Profile Image</span>
+                        {% endif %}
+                    </label>
+                </div>
+                <!-- vendor -->
+                <div style="width: 47.5%;" class="input-box">
+                    <label for="id_vendor">Vendor:</label>
+                    {{ form.vendor }}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-around gap-4">
+                <div class="input-box">
+                    <label for="id_supply_date">Supply date:</label>
+                    <input type="date" id="id_supply_date" class="input-field" value="{{ fruit_instance.supply_date }}" name="supply_date" autocomplete="off" >
+                </div>
+                <div class="input-box">
+                    <label for="id_price">Price per unit:</label>
+                    <input type="text" id="id_price" class="input-field" placeholder="Enter price" value="{{ form.instance.price }}" name="price" autocomplete="off">
+                </div>
+                <div class="input-box">
+                    <label for="id_discount">Discount:</label>
+                    <input type="text" id="id_discount" class="input-field" placeholder="Enter discount" value="{{ form.instance.discount }}" name="discount" autocomplete="off">
+                </div>
+                
+            </div>
+            <div class="my-3">
+                <input class="btn btn-outline-dark w-100 p-2 fw-bold" type="submit" value="Add">
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+     document.addEventListener('DOMContentLoaded', function() {
+        var vendorField = document.getElementById('id_vendor');
+        vendorField.classList.add('input-field');
+    });
+    
+</script>
+{% if form.instance.image %}
+<script>
+    const imageUrl = "{{ form.instance.image }}";
+    const fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+    document.querySelector('.image-label').textContent = fileName;
+</script>
+{% endif %}
+{% endblock %}
