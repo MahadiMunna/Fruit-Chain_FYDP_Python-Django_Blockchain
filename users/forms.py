@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserAccount, VendorAccount
+from .models import UserAccount
 
 GENDER_TYPE = (
     ('Male', 'Male'),
@@ -28,20 +28,6 @@ class RegistrationForm(UserCreationForm):
         )
     
         return account_user
-
-class VendorRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = VendorAccount
-        exclude = ['user']
-
-        widgets = {
-          'address': forms.Textarea(attrs={'rows':3}),
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super(VendorRegistrationForm, self).__init__(*args, **kwargs)
-        for field_name in self.fields:
-          self.fields[field_name].required = True
 
 
 class EditProfile(forms.ModelForm):

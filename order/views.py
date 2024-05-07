@@ -45,7 +45,11 @@ def cart_view(request):
         }
         return render(request, 'cart.html', context)
     else:
-        return render(request, 'cart.html')
+        data = FruitModel.objects.all()
+        context = {
+            'data':data,
+        }
+        return render(request, 'cart.html', context)
 
 def remove_from_cart(request, pk):
     item = get_object_or_404(FruitModel, pk=pk)

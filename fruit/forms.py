@@ -1,11 +1,13 @@
 from django import forms
-from .models import FruitModel
+from .models import FruitModel, Vendor
 
-class PostForm(forms.ModelForm):
+class FruitForm(forms.ModelForm):
     class Meta:
         model=FruitModel
         fields= '__all__'
-        widgets = {
-          'description': forms.Textarea(attrs={'rows':3}),
-          'supply_date': forms.DateInput({'type':'date'})
-        }
+
+class VendorForm(forms.ModelForm):
+    class Meta:
+        model = Vendor
+        fields= '__all__'
+

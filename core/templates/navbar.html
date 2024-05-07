@@ -4,7 +4,13 @@
         <ul class="list-unstyled">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'home' %}">Fruits</a></li>
-            {% if request.user.is_authenticated %}
+            {% if request.user.is_staff %}
+            <li><a href="{% url 'add_fruit' %}">Add Fruits</a></li>
+            <li><a href="{% url 'add_vendor' %}">Add Vendors</a></li>
+            <li><a href="{% url 'home' %}">Archive</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% elif request.user.is_authenticated %}
             <li><a href="{% url 'cart' %}">Cart</a></li>
             <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>

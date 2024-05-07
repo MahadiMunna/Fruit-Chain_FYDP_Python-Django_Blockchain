@@ -9,12 +9,3 @@ class UserAccount(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
-
-class VendorAccount(models.Model):
-    user = models.OneToOneField(User, related_name='vendor', on_delete=models.CASCADE)
-    NID_number = models.CharField(max_length=17)
-    phone_number = models.CharField(max_length=14)
-    address = models.CharField(max_length=200)
-
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"

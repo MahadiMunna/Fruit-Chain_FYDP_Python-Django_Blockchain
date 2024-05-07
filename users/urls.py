@@ -9,5 +9,4 @@ urlpatterns = [
     path('update_profile/',views.UserAccountUpdateView.as_view(), name='update_profile'),
     path('change_password/', views.ChangePasswordView.as_view(), name='change_pass'),
     path('forgot_password/', views.forgot_pass, name='set_pass'),
-    path('vendor-registration/', views.vendor_registration, name='vendor_registration'),
 ]
