@@ -37,7 +37,11 @@
                         {% endif %}
                     </td>
                     <td>{{ cart.item.name }}</td>
+                    {% if cart.item.discount > 0 %}
+                    <td><s>{{ cart.item.price }}</s>৳ <br><span class="text-danger">{{ cart.item.get_discounted_price }}৳</span></td>
+                    {% else %}
                     <td>{{ cart.item.price }}৳</td>
+                    {% endif %}
                     <td>
                         <div class="text-center">
                                 <p class="m-0">

@@ -22,12 +22,21 @@
                 </div>
                 <div style="background-color: #c9cacb;" class="col-8">
                     <div class="p-2">
-                        <h6 class="card-title">{{fruit.name}}</h6>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">{{fruit.name}}</h6>
+                            {% if fruit.discount > 0 %}
+                            <h6 class="text-danger"> {{ fruit.discount }}% </h6>
+                            {% endif %}
+                        </div>
                         <small class="card-text ">{{fruit.description | truncatewords:8}} <a class="text-decoration-none"
                                 href="{% url 'details' id=fruit.id %}">see more</a></small><br>
                         <small class="text-secondary fw-bold">From: {{fruit.location}}</small><br>
                         <small class="text-secondary fw-bold">Supply date: {{fruit.supply_date}}</small><br>
+                        {% if fruit.discount > 0 %}
+                        <small class="fw-bold">Price: <s>{{fruit.price}}৳</s> <span  class="text-danger">{{fruit.get_discounted_price}}৳/kg</span> </small><br>
+                            {% else %}
                         <small class="fw-bold">Price: {{fruit.price}}৳/kg</small><br>
+                        {% endif %}
                         <a class="btn p-1 btn-dark" href="{% url 'edit_fruit' id=fruit.id %}">Edit Post</a>
                         <a class="btn p-1 btn-dark" href="{% url 'flash_sale' fruit.id %}">Add to Flashsell</a>
                         <a class="btn p-1 btn-dark" href="{% url 'stocked_out' fruit.id %}">Make stock Out</a>
@@ -51,14 +60,22 @@
                 </div>
                 <div style="background-color: #c9cacb;" class="col-8">
                     <div class="p-2">
-                        <h6 class="card-title">{{fruit.name}}</h6>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title">{{fruit.name}}</h6>
+                            {% if fruit.discount > 0 %}
+                            <h6 class="text-danger"> {{ fruit.discount }}% </h6>
+                            {% endif %}
+                        </div>
                         <small class="card-text ">{{fruit.description | truncatewords:8}} <a class="text-decoration-none"
                                 href="{% url 'details' id=fruit.id %}">see more</a></small><br>
                         <small class="text-secondary fw-bold">From: {{fruit.location}}</small><br>
                         <small class="text-secondary fw-bold">Supply date: {{fruit.supply_date}}</small>
+                        {% if fruit.discount > 0 %}
+                        <small class="fw-bold">Price: <s>{{fruit.price}}৳</s> <span  class="text-danger">{{fruit.get_discounted_price}}৳/kg</span> </small><br>
+                            {% else %}
+                        <small class="fw-bold">Price: {{fruit.price}}৳/kg</small><br>
+                        {% endif %}
                         <div class="d-flex justify-content-between align-items-center">
-                            <small class="fw-bold">Price:
-                                {{fruit.price}}৳/kg</small>
                             <a class="btn p-1 btn-dark" href="{% url 'add-to-cart' fruit.id %}">Add to Cart</a>
                             <a class="btn p-1 btn-dark" href="{% url 'add_to_favourite' fruit.id %}">Add to Favourite</a>
                         </div>

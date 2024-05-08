@@ -102,3 +102,7 @@ def increase_decrease(request, pk, type):
         referer_url = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(referer_url)
     
+def remove_order(request, id):
+    order = Order.objects.filter(id=id, user=request.user)
+    order.delete()
+    return redirect('profile')

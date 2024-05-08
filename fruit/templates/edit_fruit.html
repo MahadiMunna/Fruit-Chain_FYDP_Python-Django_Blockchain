@@ -64,7 +64,7 @@
             <div class="d-flex justify-content-around gap-4">
                 <div class="input-box">
                     <label for="id_supply_date">Supply date:</label>
-                    <input type="date" id="id_supply_date" class="input-field" value="{{ fruit_instance.supply_date }}" name="supply_date" autocomplete="off" >
+                    <input type="date" id="id_supply_date" class="input-field" value="{{ fruit_instance.supply_date|date:'Y-m-d' }}" name="supply_date" autocomplete="off" >
                 </div>
                 <div class="input-box">
                     <label for="id_price">Price per unit:</label>

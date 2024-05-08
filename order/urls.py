@@ -6,4 +6,5 @@ urlpatterns = [
     path('cart-view/', views.cart_view, name='cart'),
     path('remove-from-cart/<int:pk>/', views.remove_from_cart , name='remove'),
     path('increase-decrease/<int:pk>/<type>', views.increase_decrease , name='increase-decrease'),
+    path('remove/<int:id>/', views.remove_order, name='remove-order'),
 ]

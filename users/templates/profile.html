@@ -17,5 +17,45 @@
     
     <a class="btn btn-primary" href="{% url 'update_profile' %}">Edit Profile</a>
   </div>
+  <div class="container mx-auto text-center">
+    <p style="margin: 50px 0px 20px 0px;" class="text-center fw-bold p-3 rounded fs-5"><span class="alert alert-danger">Your Orders</span>
+    </p>
+    {% if orders %}
+    <table style="margin-bottom: 200px;" class="table table-striped border border-3 shadow">
+      <thead>
+        <tr>
+          <th scope="col">Order Id</th>
+          <th scope="col">Ordered Items</th>
+          <th scope="col">Total Cost</th>
+          <th scope="col">Payment Method</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>
+            {{ order.orderId }}
+          </td>
+          <td>
+            <ul>
+              {% for item in order.order_items.all %}
+                  <li>{{ item.item.name }} x {{ item.quantity }}(kg) - {% if item.item.discount %} {{ item.item.get_discounted_price }}৳/kg {% else %} {{ item.item.price }}৳/kg {% endif %}</li>
+              {% endfor %}
+          </ul>
+          </td>
+          
+          <td>{{ order.get_totals }}৳</td>
+          <td>{{ order.payment_method }}</td>
+          
+          <td><a href="{% url 'remove-order' order.id %}" class="btn btn-danger p-1"> Remove </a></td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <h4 class="text-center text-secondary" style="margin-top: 100px;">You don't have borrowed any books!</h4>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 
 {% endblock %}

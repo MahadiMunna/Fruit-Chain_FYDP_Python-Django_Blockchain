@@ -25,6 +25,14 @@ class FruitModel(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} from {self.location}"
+    
+    def get_discounted_price(self):
+        if self.discount is not None:
+            discount_amount = (self.price * self.discount) / 100
+            discounted_price = self.price - discount_amount
+            return format(discounted_price, "0.2f")
+        else:
+            return self.price
 
 class FavouriteFruit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -16,8 +16,12 @@ class Cart(models.Model):
         return f"{self.item} - {self.quantity}"
     
     def get_total(self):
-        total = self.item.price*self.quantity
-        return format(total, '0.2f')
+        if self.item.discount is not None:
+            total = float(self.item.get_discounted_price())*self.quantity
+            return format(total, '0.2f')
+        else:
+            total = self.item.price*self.quantity
+            return format(total, '0.2f')
 
 
 PAYMENT_METHOD = (
@@ -38,7 +42,8 @@ class Order(models.Model):
         for order_item in self.order_items.all():
             total += float(order_item.get_total())
 
-        return total
+        return format(total, "0.2f")
+    
     def __str__(self):
         order_status = 'Order Pending'
         if self.ordered:

@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+from order.models import Order
 from . import forms
 from django.contrib import messages
 from django.views.generic import FormView, View
@@ -40,6 +42,9 @@ class UserLogoutView(View):
     
 class Profile(TemplateView):
     template_name = 'profile.html'
+    def get(self, request):
+         orders = Order.objects.filter(user=request.user, ordered=True)
+         return render(request, self.template_name, {'orders': orders})
 
 class UserAccountUpdateView(View):
     template_name = 'update_profile.html'
@@ -92,6 +97,9 @@ def forgot_pass(request):
         return render(request, 'forget_pass.html', {'form': form, 'type':'Set a new password'})
     else:
         return redirect('signup')
+    
+   
+
     
 
 
