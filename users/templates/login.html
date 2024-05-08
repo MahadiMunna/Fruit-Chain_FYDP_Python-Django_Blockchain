@@ -3,12 +3,24 @@
 
 {% block content %}
 <div class="form d-flex justify-content-center align-items-center mt-5">
-    <div class="d-flex flex-column justify-content-center p-5 rounded rounded shadow-lg" style="width: 640px; background: #e9e8e8;">
+    <div class="d-flex flex-column justify-content-center p-5 rounded rounded shadow-lg" style="width: 640px; background: #e0dddd;">
         <div class="text-center fw-bold mb-5 fs-1">
             <header>Login</header>
         </div>
         <form style="width: 440px;" class="mx-auto" enctype="multipart/form-data" action="" method="post">
             {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error!</strong> Please correct the following errors:
+                <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             <!-- Username -->
             <div class="input-box">
                 <label for="id_username">Username:</label>

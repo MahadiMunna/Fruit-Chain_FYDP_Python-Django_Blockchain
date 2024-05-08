@@ -11,6 +11,7 @@ urlpatterns = [
     path('stocked_out/<int:id>/', views.make_stocked_out, name='stocked_out'),
     path('archive_fruits/', views.archive_fruits, name='archive'),
     path('move_to_regular/<int:id>/', views.move_to_regular, name='move_to_regular'),
+    path('remove_fruit/<int:id>/', views.remove_fruit, name='remove_fruit'),
 
     path('flash_sale/<int:id>/', views.add_to_flash_sale, name='flash_sale'),
     path('flash_sale/', views.flash_sale_fruits, name='flash_sale_fruits'),
@@ -19,6 +20,10 @@ urlpatterns = [
     path('favourite/<int:id>/', views.add_to_favorites, name='add_to_favourite'),
     path('favourite_fruits/', views.favourite_fruits, name='favourite'),
     path('remove_favourite/<int:id>/', views.remove_from_favourites, name='remove_favourite'),
+
+    path('add_to_wishlist/<int:id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/', views.wishlist, name='wishlist'),
+    path('remove_from_wishlist/<int:id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
 
     
 ]

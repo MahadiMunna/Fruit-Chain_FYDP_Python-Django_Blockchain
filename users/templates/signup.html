@@ -9,6 +9,18 @@
         </div>
         <form enctype="multipart/form-data" action="" method="post">
             {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Error!</strong> Please correct the following errors:
+                <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             <!-- Username -->
             <div class="input-box">
                 <label for="id_username">Username:</label>
@@ -36,7 +48,7 @@
                 <div style="width: 47.5%;" class="input-box">
                     <label for="uploadImage">Profile Image:</label>
                     <input type="file" id="uploadImage" class="input-field" name="profile_image" onchange="displayImage()">
-                    <label class="up-image-label" for="uploadImage">
+                    <label class="up-image-label overflow-hidden" for="uploadImage">
                         <i class="fa-solid fa-upload me-2"></i>
                         <span class="image-label">Upload Profile Image</span>
                     </label>

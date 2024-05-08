@@ -16,7 +16,7 @@ class Cart(models.Model):
         return f"{self.item} - {self.quantity}"
     
     def get_total(self):
-        if self.item.discount is not None:
+        if self.item.discount > 0:
             total = float(self.item.get_discounted_price())*self.quantity
             return format(total, '0.2f')
         else:

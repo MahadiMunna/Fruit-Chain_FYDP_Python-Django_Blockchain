@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.views.generic import DetailView
-from fruit.models import FruitModel, Vendor, FavouriteFruit
+from fruit.models import FruitModel, Vendor, FavouriteFruit, Wishlist
 from django.contrib import messages
 from .forms import FruitForm, VendorForm
 from django.views.generic import TemplateView
@@ -103,6 +103,11 @@ def move_to_regular(request, id):
     fruit.save()
     return redirect('archive')
 
+def remove_fruit(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    fruit.delete()
+    return redirect('archive')
+
 def add_to_flash_sale(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     fruit.flash_sale = True
@@ -132,3 +137,18 @@ def remove_from_favourites(request, id):
     favorite_fruit = get_object_or_404(FavouriteFruit, id=id, user=request.user)
     favorite_fruit.delete()
     return redirect('favourite')
+
+def add_to_wishlist(request, id):
+    fruit = get_object_or_404(FruitModel, id=id)
+    Wishlist.objects.get_or_create(user=request.user, fruit=fruit)
+    return redirect('home')
+
+
+def wishlist(request):
+    fruits = Wishlist.objects.filter(user=request.user)
+    return render(request, 'wishlist.html', {'fruits': fruits})
+
+def remove_from_wishlist(request, id):
+    wish_fruit = get_object_or_404(Wishlist, id=id, user=request.user)
+    wish_fruit.delete()
+    return redirect('wishlist')

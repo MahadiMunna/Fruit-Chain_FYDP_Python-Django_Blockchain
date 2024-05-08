@@ -21,7 +21,7 @@
             <div class="input-box d-flex justify-content-center">
                 <div style="width: 47.5%;">
                     <input type="file" id="uploadImage" class="input-field" name="profile_image" onchange="displayImage()">
-                    <label class="up-image-label" for="uploadImage">
+                    <label class="up-image-label overflow-hidden" for="uploadImage">
                         <i class="fa-solid fa-upload me-2"></i>
                         {% if form.instance.account.profile_image %}
                         <span class="image-label">{{ form.instance.account.profile_image.name }}</span>
