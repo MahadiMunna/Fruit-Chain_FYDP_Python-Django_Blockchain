@@ -4,8 +4,10 @@ from django.urls import reverse
 from fruit.models import FruitModel
 from .models import Cart, Order
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def add_to_cart(request, pk):
     item = get_object_or_404(FruitModel, pk=pk)
     order_item = Cart.objects.get_or_create(item=item, user=request.user, purchased=False)
@@ -32,6 +34,7 @@ def add_to_cart(request, pk):
         referer_url = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(referer_url)
 
+@login_required
 def cart_view(request):
     data = FruitModel.objects.all()
     carts = Cart.objects.filter(user=request.user, purchased=False)
@@ -51,6 +54,7 @@ def cart_view(request):
         }
         return render(request, 'cart.html', context)
 
+@login_required
 def remove_from_cart(request, pk):
     item = get_object_or_404(FruitModel, pk=pk)
     orders = Order.objects.filter(user=request.user, ordered=False)
@@ -70,6 +74,7 @@ def remove_from_cart(request, pk):
         referer_url = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(referer_url)
 
+@login_required
 def increase_decrease(request, pk, type):
     item = get_object_or_404(FruitModel, pk=pk)
     order_qs = Order.objects.filter(user=request.user, ordered=False)
@@ -101,7 +106,8 @@ def increase_decrease(request, pk, type):
     else:
         referer_url = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(referer_url)
-    
+
+@login_required    
 def remove_order(request, id):
     order = Order.objects.filter(id=id, user=request.user)
     order.delete()

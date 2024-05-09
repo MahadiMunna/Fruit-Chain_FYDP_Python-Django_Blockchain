@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block head_title %}Fruit Details{% endblock %}
 {% block body %}
 <!-- fruit details  -->
 <div class="my-5 container mx-auto">
   <div class="d-flex flex-lg-row flex-column gap-3 justify-content-center align-items-center">
     <div class="col me-lg-3">
-        {% if object.image %}
-            <img src="{{object.image.url}}" class="w-100 rounded" alt="...">
-            {% else %}
-            <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded" alt="...">
-            {% endif %}
+      {% if object.image %}
+      <img src="{{object.image.url}}" class="w-100 rounded" alt="...">
+      {% else %}
+      <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded" alt="...">
+      {% endif %}
     </div>
     <div class="col w-auto" style="max-width: 700px;">
       <h3 class="text-success">{{object.name}}</h3>
@@ -18,13 +19,55 @@
       <p>{{object.description}}</p>
       <div class="mb-1">
         <small class="fw-bold">Fruit From: {{object.location}}</small><br>
-        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br>
-        <small class="fw-bold">Price:
-            {{object.price}}৳/kg</small><br><br>
+        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br><br>
+        
+        {% if object.discount > 0 %}
+        <h6 class="fw-bold"><s>{{object.price}}৳</s> <span
+                class="text-danger">{{object.get_discounted_price}}৳/kg</span> </h6>
+                <h6 class="text-danger fw-bold"> {{object.discount}}% Discount</h6><br>
+        {% else %}
+        <h6 class="fw-bold">{{object.price}}৳/kg</h6><br>
+        {% endif %}
         <a class="btn p-1 btn-primary" href="{% url 'add-to-cart' object.id %}">Add to Cart</a>
-    </div>
+      </div>
     </div>
   </div>
+</div>
+
+
+<div class="my-3">
+  <div class="container mx-auto m-2">
+    {% if comments %}
+    <h4 class="text-center alert alert-info m-3">Total number of comments: {{comments | length}}</h4>
+    <div class="card-body">
+      {% for comment in comments %}
+      <div class="border rounded p-2 mb-2">
+        <p class="text-primary"><b>{{comment.name}}</b> <small
+            class="text-secondary fw-bold">{{comment.created_on}}</small></p>
+        <p class="fw-bold">{{comment.comment}}</p>
+      </div>
+      {% endfor %}
+      {% else %}
+      <h5 class="text-center alert alert-info m-3">No comments found on this post!</h5>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container mx-auto m-2">
+    {% if request.user.is_authenticated %}
+    <div class="card-body">
+      <form action="" method="post">
+        {% csrf_token %}
+        {{comment_form | crispy}}
+
+        <button class="btn btn-success">Comment</button>
+      </form>
+    </div>
+    {% else %}
+    <h5 class="text-center alert alert-danger m-3">Login first for posting comments!</h5>
+    {% endif %}
+  </div>
+</div>
+<div style="margin-bottom: 100px;">
 </div>
 
 {% endblock %}

@@ -3,7 +3,7 @@
     <div class="mx-2">
         <ul class="list-unstyled">
             <li><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i>Home</a></li>
-            <li><a href="{% url 'home' %}"><i class="fa-solid fa-apple-whole"></i>Fruits</a></li>
+            <li><a href="{% url 'fruits' %}"><i class="fa-solid fa-apple-whole"></i>Fruits</a></li>
             {% if request.user.is_staff %}
             <li><a href="{% url 'add_fruit' %}"><i class="fa-solid fa-square-plus"></i>Add Fruits</a></li>
             <li><a href="{% url 'add_vendor' %}"><i class="fa-solid fa-user-plus"></i>Add Vendors</a></li>

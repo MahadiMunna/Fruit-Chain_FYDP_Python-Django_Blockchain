@@ -9,13 +9,15 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 class UserRegistrationView(FormView):
     template_name = 'signup.html'
     form_class = forms.RegistrationForm
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('home')
     
     def form_valid(self,form):
         user = form.save()
@@ -25,7 +27,7 @@ class UserRegistrationView(FormView):
 class UserLoginView(LoginView):
     template_name = 'login.html'
     def get_success_url(self):
-        return reverse_lazy('profile')
+        return reverse_lazy('home')
     def form_valid(self, form):
         messages.success(self.request, 'Logged In Successfully')
         return super().form_valid(form)
@@ -34,18 +36,22 @@ class UserLoginView(LoginView):
         messages.warning(self.request, 'User Information is incorrect')
         return super().form_invalid(form)
 
+
+@method_decorator(login_required, name='dispatch')
 class UserLogoutView(View):
     def get(self, request):
         messages.success(self.request, 'Successfully logged out!')
         logout(request)
         return redirect('login')
-    
+
+@method_decorator(login_required, name='dispatch')    
 class Profile(TemplateView):
     template_name = 'profile.html'
     def get(self, request):
          orders = Order.objects.filter(user=request.user, ordered=True)
          return render(request, self.template_name, {'orders': orders})
 
+@method_decorator(login_required, name='dispatch')
 class UserAccountUpdateView(View):
     template_name = 'update_profile.html'
 
@@ -61,6 +67,7 @@ class UserAccountUpdateView(View):
             return redirect('profile')
         return render(request, self.template_name, {'form': form})
 
+@method_decorator(login_required, name='dispatch')
 class ChangePasswordView(TemplateView):
     template_name = 'change_pass.html'
 

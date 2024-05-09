@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+LOGIN_URL = '/user/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

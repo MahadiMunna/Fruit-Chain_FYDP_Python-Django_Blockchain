@@ -10,9 +10,13 @@ from django.views.generic import TemplateView
 from order.models import Cart, Order
 from fruit_sell.settings import STORE_ID, STORE_PASS
 from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@method_decorator(login_required, name='dispatch')
 class CheckoutTemplateView(TemplateView):
+    
     def get(self, request, *args, **kwargs):
         carts = Cart.objects.filter(user=request.user, purchased=False)
         orders = Order.objects.filter(user=request.user, ordered=False)
@@ -114,7 +118,7 @@ def sslc_status(request):
 
             return HttpResponseRedirect(reverse('sslc_complete', kwargs={'val_id': val_id, 'tran_id': tran_id}))
 
-
+@login_required
 def sslc_complete(request, val_id, tran_id):
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     order = order_qs[0]
