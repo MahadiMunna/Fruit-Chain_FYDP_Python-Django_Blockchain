@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.views.generic import DetailView
@@ -63,7 +64,7 @@ def add_fruit(request):
                 discount=discount
             )
             messages.success(request, 'New fruit added successfully!')
-            return redirect('home')
+            return redirect('fruits')
     else:
         fruit_form = FruitForm()
 
@@ -88,7 +89,8 @@ class EditFruitView(View):
         if form.is_valid():
             form.save()
             messages.success(self.request, 'Fruit post updated successfully!')
-            return redirect('home')
+            referer_url = request.META.get('HTTP_REFERER', '/')
+            return HttpResponseRedirect(referer_url)
         return render(request, self.template_name, {'form': form})
 
 @login_required
@@ -120,7 +122,9 @@ def make_stocked_out(request, id):
     fruit.stocked_out = True
     fruit.flash_sale = False
     fruit.save()
-    return redirect('home')
+    messages.success(request, f'{fruit.name} marked as stocked out!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def archive_fruits(request):
@@ -132,20 +136,26 @@ def move_to_regular(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     fruit.stocked_out = False
     fruit.save()
-    return redirect('archive')
+    messages.success(request, f'{fruit.name} added in stocks!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def remove_fruit(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
+    messages.success(request, f'{fruit.name} removed successfully!')
     fruit.delete()
-    return redirect('archive')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def add_to_flash_sale(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     fruit.flash_sale = True
     fruit.save()
-    return redirect('home')
+    messages.success(request, f'{fruit.name} added to flash sale!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def flash_sale_fruits(request):
@@ -157,13 +167,17 @@ def make_regular_sale(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     fruit.flash_sale = False
     fruit.save()
-    return redirect('flash_sale_fruits')
+    messages.success(request, f'{fruit.name} moved to regular sale!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def add_to_favorites(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     FavouriteFruit.objects.get_or_create(user=request.user, fruit=fruit)
-    return redirect('home')
+    messages.success(request, f'{fruit.name} added to you favourite successfully!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def favourite_fruits(request):
@@ -173,14 +187,18 @@ def favourite_fruits(request):
 @login_required
 def remove_from_favourites(request, id):
     favorite_fruit = get_object_or_404(FavouriteFruit, id=id, user=request.user)
+    messages.success(request, f'{favorite_fruit.fruit.name} removed from favourits successfully!')
     favorite_fruit.delete()
-    return redirect('favourite')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def add_to_wishlist(request, id):
     fruit = get_object_or_404(FruitModel, id=id)
     Wishlist.objects.get_or_create(user=request.user, fruit=fruit)
-    return redirect('home')
+    messages.success(request, f'{fruit.name} added to wishlist successfully!')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required
 def wishlist(request):
@@ -190,5 +208,7 @@ def wishlist(request):
 @login_required
 def remove_from_wishlist(request, id):
     wish_fruit = get_object_or_404(Wishlist, id=id, user=request.user)
+    messages.success(request, f'{wish_fruit.fruit.name} removed from wishlist successfully!')
     wish_fruit.delete()
-    return redirect('wishlist')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)

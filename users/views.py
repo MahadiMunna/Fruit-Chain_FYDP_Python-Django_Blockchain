@@ -22,6 +22,7 @@ class UserRegistrationView(FormView):
     def form_valid(self,form):
         user = form.save()
         login(self.request, user)
+        messages.success(self.request, 'Registered successfully! You are logged in now')
         return super().form_valid(form)
 
 class UserLoginView(LoginView):
