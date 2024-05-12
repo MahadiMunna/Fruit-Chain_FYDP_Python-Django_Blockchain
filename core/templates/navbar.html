@@ -2,25 +2,30 @@
     <h4 class="mb-5 text-center">Fruit Sell</h4>
     <div class="mx-2">
         <ul class="list-unstyled">
-            <li><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i>Home</a></li>
-            <li><a href="{% url 'fruits' %}"><i class="fa-solid fa-apple-whole"></i>Fruits</a></li>
+            <li {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li {% if request.resolver_match.url_name == 'fruits' %}class="active"{% endif %}><a href="{% url 'fruits' %}"><i class="fa-solid fa-apple-whole"></i>Fruits</a></li>
             {% if request.user.is_staff %}
-            <li><a href="{% url 'add_fruit' %}"><i class="fa-solid fa-square-plus"></i>Add Fruits</a></li>
-            <li><a href="{% url 'add_vendor' %}"><i class="fa-solid fa-user-plus"></i>Add Vendors</a></li>
-            <li><a href="{% url 'archive' %}"><i class="fa-solid fa-box-archive"></i>Stockout list</a></li>
-            <li><a href="{% url 'flash_sale_fruits' %}"><i class="fa-solid fa-fire"></i>Flashsale list</a></li>
+            <li {% if request.resolver_match.url_name == 'add_fruit' %}class="active"{% endif %}><a href="{% url 'add_fruit' %}"><i class="fa-solid fa-square-plus"></i>Add Fruits</a></li>
+            <li {% if request.resolver_match.url_name == 'add_vendor' %}class="active"{% endif %}><a href="{% url 'add_vendor' %}"><i class="fa-solid fa-user-plus"></i>Add Vendors</a></li>
+            <li {% if request.resolver_match.url_name == 'archive' %}class="active"{% endif %}><a href="{% url 'archive' %}"><i class="fa-solid fa-box-archive"></i>Stockout list</a></li>
+            <li {% if request.resolver_match.url_name == 'flash_sale_fruits' %}class="active"{% endif %}><a href="{% url 'flash_sale_fruits' %}"><i class="fa-solid fa-fire"></i>Flashsale list</a></li>
+            <li {% if request.resolver_match.url_name == 'orders' %}class="active"{% endif %}><a href="{% url 'orders' %}"><i class="fa-solid fa-truck"></i></i>Manage Orders</a></li>
             {% elif request.user.is_authenticated %}
-            <li><a href="{% url 'cart' %}"><i class="fa-solid fa-cart-shopping"></i>Cart</a></li>
-            <li><a href="{% url 'favourite' %}"><i class="fa-solid fa-heart"></i>Favourite</a></li>
-            <li><a href="{% url 'wishlist' %}"><i class="fa-solid fa-clipboard-list"></i>Wishlist</a></li>
+            <li {% if request.resolver_match.url_name == 'cart' or request.resolver_match.url_name == 'checkout' %}class="active"{% endif %}><a href="{% url 'cart' %}"><i class="fa-solid fa-cart-shopping"></i>Cart</a></li>
+            <li {% if request.resolver_match.url_name == 'wishlist' %}class="active"{% endif %}><a href="{% url 'wishlist' %}"><i class="fa-solid fa-heart"></i>Wishlist</a></li>
             {% else %}
-            <li class="mt-5"><a href="{% url 'signup' %}"><i class="fa-solid fa-user-plus"></i>Signup</a></li>
-            <li><a href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
+            <li style="margin-top: 30%;" {% if request.resolver_match.url_name == 'signup' %}class="active"{% endif %}"><a href="{% url 'signup' %}"><i class="fa-solid fa-user-plus"></i>Signup</a></li>
+            <li {% if request.resolver_match.url_name == 'login' %}class="active"{% endif %}><a href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i>Login</a></li>
             {% endif %}
             {% if request.user.is_authenticated %}
-            <li class="mt-5"><a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i>Profile</a></li>
-            <li><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
+            <li style="margin-top: 30%;" {% if request.resolver_match.url_name == 'profile' %}class="active"{% endif %}"><a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i>Profile</a></li>
+            <li {% if request.resolver_match.url_name == 'logout' %}class="active"{% endif %}><a href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket"></i>Logout</a></li>
             {% endif %}
         </ul>
     </div>
+    
+    
+    
+    
+    
 </nav>

@@ -93,13 +93,13 @@ class CheckoutTemplateView(TemplateView):
                     email = current_user.email
                     billing_address = BillingAddress.objects.filter(user=request.user)[0]
                     address = billing_address.address
-                    city = billing_address.city
+                    district = billing_address.district
                     postal_code = billing_address.postal_code
                     phone = billing_address.phone_number
 
-                    mypayment.set_customer_info(name=name, email=email, address1=address, city=city, postcode=postal_code, country='Bangladesh', phone=phone)
+                    mypayment.set_customer_info(name=name, email=email, address1=address, city=district, postcode=postal_code, country='Bangladesh', phone=phone)
 
-                    mypayment.set_shipping_info(shipping_to=name, address=address, city=city, postcode=postal_code, country='Bangladesh')
+                    mypayment.set_shipping_info(shipping_to=name, address=address, city=district, postcode=postal_code, country='Bangladesh')
 
                     response_data = mypayment.init_payment()
 

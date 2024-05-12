@@ -28,6 +28,15 @@ PAYMENT_METHOD = (
     ('Cash on delivery', 'Cash on delivery'),
     ('SSLCOMMERZ', 'SSLCOMMERZ'),
 )
+ORDER_STATUS = (
+    ('In Queue', 'In Queue'),
+    ('In Processing', 'In Processing'),
+    ('Shipped', 'Shipped'),
+    ('In Transit', 'In Transit'),
+    ('Out for delivery', 'Out for delivery'),
+    ('Delivered', 'Delivered'),
+    ('Cancelled', 'Cancelled'),
+)
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_items = models.ManyToManyField(Cart)
@@ -35,7 +44,9 @@ class Order(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     paymentId = models.CharField(max_length=100, blank=True, null=True)
     orderId = models.CharField(max_length=100, blank=True, null=True)
-    payment_method = models.CharField(max_length=30, choices=PAYMENT_METHOD, default='Cash on delivery')
+    payment_method = models.CharField(max_length=30, choices=PAYMENT_METHOD)
+    order_status = models.CharField(max_length=30, choices=ORDER_STATUS, default='In Queue')
+    cancelled = models.BooleanField(default=False)
 
     def get_totals(self):
         total = 0
@@ -48,4 +59,8 @@ class Order(models.Model):
         order_status = 'Order Pending'
         if self.ordered:
             order_status = 'Ordered'
-        return f'{self.user.first_name}-{order_status}'
+        
+        if self.cancelled:
+            return f'{self.user.first_name}-{order_status}-Cancelled'
+        else:
+            return f'{self.user.first_name}-{order_status}'

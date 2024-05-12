@@ -1,10 +1,12 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from fruit.models import FruitModel
+from order.forms import OrderForm
 from .models import Cart, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic.base import TemplateView
 
 # Create your views here.
 @login_required
@@ -112,3 +114,42 @@ def remove_order(request, id):
     order = Order.objects.filter(id=id, user=request.user)
     order.delete()
     return redirect('profile')
+
+@login_required    
+def cancel_order(request, id):
+    order = Order.objects.filter(id=id, user=request.user)[0]
+    order.cancelled = True
+    order.order_status = 'Cancelled'
+    order.save()
+    return redirect('profile')
+
+class OrdersView(TemplateView):
+    template_name = 'orders.html'
+
+    def get(self, request):
+         orders = Order.objects.filter(ordered=True)
+         return render(request, self.template_name, {'orders': orders})
+
+class UpdateOrdersView(TemplateView):
+    template_name = 'update_orders.html'
+    pk_url_kwarg = 'id'
+
+    def get(self, request, *args, **kwargs):
+         order_id = kwargs.get(self.pk_url_kwarg)
+         order_instance =  get_object_or_404(Order, id=order_id)
+         form = OrderForm(instance=order_instance)
+         orders = Order.objects.filter(ordered=True)
+         return render(request, self.template_name, {'form':form, 'orders': orders, 'order_instance':order_instance})
+
+    def post(self, request, *args, **kwargs):
+        order_id = kwargs.get(self.pk_url_kwarg)
+        order_instance =  get_object_or_404(Order, id=order_id)
+        form = OrderForm(request.POST, request.FILES, instance=order_instance)
+        if form.is_valid():
+            if form.cleaned_data.get('order_status') == 'Cancelled':
+                order_instance.cancelled = True
+                order_instance.save()
+            form.save()
+            messages.success(self.request, 'Order status updated successfully!')
+            return redirect('orders')
+        return render(request, self.template_name, {'form': form})

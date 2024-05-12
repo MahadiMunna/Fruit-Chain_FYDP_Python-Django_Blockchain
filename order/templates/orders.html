@@ -4,27 +4,17 @@
 {% load static %}
 {% block content %}
 
-<div class="container mx-auto d-flex justify-content-between">
-  <div class="text-center rounded rounded-4 shadow-lg p-3 fw-bold mt-4" style="max-width: 200px; height:100vw" >
-    {% if request.user.account.profile_image %}
-    <img class="w-75 rounded-4 shadow-lg" src="{{request.user.account.profile_image.url}}" class="img-fluid rounded-start" alt="...">
-    {% else %}
-    <img class="w-75 rounded-4 shadow-lg" src="{% static './images/profile.png' %}" class="img-fluid rounded-start"
-      alt="...">
-    {% endif %}
-    <br><br>
-    <span class="fs-2">{{request.user.first_name}} {{request.user.last_name}}</span><br><br>
-    
-    <a class="btn btn-primary" style="display:block"  href="{% url 'update_profile' %}">Edit Profile</a>
-  </div>
+<div class="container mx-auto row justify-content-center">
+  
   <div class="container mx-auto text-center">
-    <p style="margin: 20px 0px 20px 0px;" class="text-center fw-bold p-3 rounded fs-5"><span style="padding:10px" class="alert alert-danger">Your Orders</span>
+    <p style="margin: 50px 0px 20px 0px;" class="text-center fw-bold p-3 rounded fs-5"><span class="alert alert-danger">Manage Orders</span>
     </p>
     {% if orders %}
-    <table style="margin-bottom: 200px;" class="table table-striped border border-3 shadow">
+    <table style="margin-bottom: 200px; font-size: 14px;" class="table table-striped border border-3 shadow">
       <thead>
         <tr>
           <th scope="col">Order Id</th>
+          <th scope="col">Customer</th>
           <th scope="col">Ordered Items</th>
           <th scope="col">Total Cost</th>
           <th scope="col">Payment Method</th>
@@ -39,6 +29,9 @@
             {{ order.orderId }}
           </td>
           <td>
+            {{ order.user.first_name }} {{ order.user.last_name }}
+          </td>
+          <td>
             <ul>
               {% for item in order.order_items.all %}
                   <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
@@ -48,13 +41,10 @@
           
           <td>{{ order.get_totals }}৳</td>
           <td>{{ order.payment_method }}</td>
-          {% if order.order_status == 'Cancelled' %}
-          <td><a class="btn btn-outline-danger manage_order_btn">{{ order.order_status }}</a></td>
-          {% else %}
-          <td><a class="btn btn-outline-success manage_order_btn">{{ order.order_status }}</a></td>
-          {% endif %}          
+          <td>{{ order.order_status }}</td>
+          
           {% if order.cancelled == False and order.order_status != 'Delivered' %}
-          <td><a href="{% url 'cancel-order' order.id %}" class="btn btn-danger manage_order_btn"> Cancel Order </a></td>
+          <td><a href="{% url 'update-order-status' order.id %}" class="btn btn-success manage_order_btn"> Update Status </a></td>
           {% else %}
           <td><a href="{% url 'remove-order' order.id %}" class="btn btn-danger manage_order_btn"> Remove </a></td>
           {% endif %}

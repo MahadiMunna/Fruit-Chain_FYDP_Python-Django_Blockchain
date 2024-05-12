@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.views.generic import DetailView
-from fruit.models import FruitModel, Vendor, FavouriteFruit, Wishlist
+from fruit.models import FruitModel, Vendor, Wishlist
 from django.contrib import messages
 from .forms import FruitForm, VendorForm, CommentForm
 
@@ -171,26 +171,6 @@ def make_regular_sale(request, id):
     referer_url = request.META.get('HTTP_REFERER', '/')
     return HttpResponseRedirect(referer_url)
 
-@login_required
-def add_to_favorites(request, id):
-    fruit = get_object_or_404(FruitModel, id=id)
-    FavouriteFruit.objects.get_or_create(user=request.user, fruit=fruit)
-    messages.success(request, f'{fruit.name} added to you favourite successfully!')
-    referer_url = request.META.get('HTTP_REFERER', '/')
-    return HttpResponseRedirect(referer_url)
-
-@login_required
-def favourite_fruits(request):
-    favorite_fruits = FavouriteFruit.objects.filter(user=request.user)
-    return render(request, 'favourite_fruits.html', {'favorite_fruits': favorite_fruits})
-
-@login_required
-def remove_from_favourites(request, id):
-    favorite_fruit = get_object_or_404(FavouriteFruit, id=id, user=request.user)
-    messages.success(request, f'{favorite_fruit.fruit.name} removed from favourits successfully!')
-    favorite_fruit.delete()
-    referer_url = request.META.get('HTTP_REFERER', '/')
-    return HttpResponseRedirect(referer_url)
 
 @login_required
 def add_to_wishlist(request, id):

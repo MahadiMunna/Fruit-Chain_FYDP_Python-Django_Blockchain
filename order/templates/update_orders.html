@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block head_title %}Profile{% endblock %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+<div class="container mx-auto row justify-content-center">
+
+    <div class="container mx-auto text-center">
+        <p style="margin: 50px 0px 20px 0px;" class="text-center fw-bold p-3 rounded fs-5"><span
+                class="alert alert-danger">Manage Orders</span>
+        </p>
+        {% if orders %}
+        <table style="margin-bottom: 200px; font-size: 14px;" class="table table-striped border border-3 shadow">
+            <thead>
+                <tr>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Ordered Items</th>
+                    <th scope="col">Total Cost</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Order Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                {% if order.orderId == order_instance.orderId %}
+                <tr>
+                    <td>
+                        {{ order.orderId }}
+                    </td>
+                    <td>
+                        {{ order.user.first_name }} {{ order.user.last_name }}
+                    </td>
+                    <td>
+                        <ul>
+                            {% for item in order.order_items.all %}
+                            <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+
+                    <td>{{ order.get_totals }}৳</td>
+                    <td>{{ order.payment_method }}</td>
+                    <form enctype="multipart/form-data" action="" method="POST">
+                        {% csrf_token %}
+                        <td>
+                            <div class="input-box">
+                                {{ form.order_status }}
+                            </div>
+                        </td>
+                        <td><input type="submit" class="btn btn-success" style="width: 100%; padding: 3px!important;" value="Save"></td>
+                    </form>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>
+                        {{ order.orderId }}
+                    </td>
+                    <td>
+                        {{ order.user.first_name }} {{ order.user.last_name }}
+                    </td>
+                    <td>
+                        <ul>
+                            {% for item in order.order_items.all %}
+                            <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+
+                    <td>{{ order.get_totals }}৳</td>
+                    <td>{{ order.payment_method }}</td>
+                    <td>{{ order.order_status }}</td>
+
+                    {% if order.cancelled == False and oder.order_status != 'Delivered' %}
+                    <td><a href="" class="btn btn-secondary manage_order_btn"> Update Status </a></td>
+                    {% else %}
+                    <td><a href="" class="btn btn-secondary manage_order_btn"> Remove </a></td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <h4 class="text-center text-secondary" style="margin-top: 100px;">You don't have any orders!</h4>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var orderStatusField = document.getElementById('id_order_status');
+            orderStatusField.classList.add('input-field');
+        });
+
+    </script>
+    {% endblock %}

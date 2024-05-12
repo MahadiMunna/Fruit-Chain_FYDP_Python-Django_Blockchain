@@ -18,10 +18,6 @@ urlpatterns = [
     path('flash_sale/', views.flash_sale_fruits, name='flash_sale_fruits'),
     path('regular_sale/<int:id>/', views.make_regular_sale, name='regular_sale'),
 
-    path('favourite/<int:id>/', views.add_to_favorites, name='add_to_favourite'),
-    path('favourite_fruits/', views.favourite_fruits, name='favourite'),
-    path('remove_favourite/<int:id>/', views.remove_from_favourites, name='remove_favourite'),
-
     path('add_to_wishlist/<int:id>/', views.add_to_wishlist, name='add_to_wishlist'),
     path('wishlist/', views.wishlist, name='wishlist'),
     path('remove_from_wishlist/<int:id>/', views.remove_from_wishlist, name='remove_from_wishlist'),

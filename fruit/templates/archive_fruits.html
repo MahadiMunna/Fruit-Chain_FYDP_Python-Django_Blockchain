@@ -36,9 +36,9 @@
                             <small class="fw-bold">{{fruit.price}}৳/kg</small><br>
                             {% endif %}
                             {% if request.user.is_staff %}
-                            <div class="mt-2">
+                            <div class="d-flex justify-content-between mt-2">
                                 <a class="card-btn btn btn-dark" href="{% url 'move_to_regular' fruit.id %}">Move to regular</a>
-                                <a class="card-btn btn btn-dark" href="{% url 'remove_fruit' fruit.id %}">Remove fruit</a>
+                                <a class="card-btn btn btn-dark" href="{% url 'remove_fruit' fruit.id %}">Delete fruit</a>
                             </div>
                             {% endif %}
                         </div>
