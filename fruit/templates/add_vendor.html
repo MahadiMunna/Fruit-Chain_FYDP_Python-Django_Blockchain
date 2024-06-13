@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% block head_title %}Add Vendor - Fruit sell{% endblock %}
 {% block content %}
 <div class="form d-flex justify-content-center align-items-center my-3">
     <div class="d-flex flex-column justify-content-center p-5 rounded rounded shadow-lg"
         style="width: 640px;  background: #e9e8e8;">
-        <div class="text-center fw-bold mb-3 fs-1">
-            <header>Add New Vendors</header>
+        <div class="mb-3 fs-1">
+            <h3 class="text-center fw-bold ">Add New Vendor</h3>
         </div>
         <form enctype="multipart/form-data" action="" method="POST">
             {% csrf_token %}

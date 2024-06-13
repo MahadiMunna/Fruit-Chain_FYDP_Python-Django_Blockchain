@@ -7,9 +7,8 @@ nav{
     height: 100vh;
     position: fixed ;
     padding-top: 5%;
-    width: 160px;
+    width: 150px;
     box-shadow: 0 25px 20px -5px rgba(0,0,0,0.4);
-    border-radius: 0 10px 10px 0;
 }
 
 nav a{
@@ -23,7 +22,7 @@ nav a:hover{
 nav li{
     margin: auto;
     padding: 3px;
-    margin: 1px;
+    margin: 2px;
     padding-left: 10px;
     transition: all 0.5s;
 }
@@ -34,7 +33,7 @@ nav li:hover{
     border-radius: 10px;
 }
 i{
-    margin-right: 10px;
+    margin-right: 7px;
 }
 .list-unstyled li.active {
     transition: all 0.8s;
@@ -50,7 +49,7 @@ label{
     width: 100%;
     height: 35px;
     font-size: 14px;
-    padding: 0 20px;
+    padding: 0 10px;
     margin-bottom: 10px;
     border-radius: 10px;
     border: none;
@@ -118,11 +117,15 @@ input[type="file"]{
 
 /* end of form design  */
 .card{
-    transition: 0.8s;
+    border-radius: 0px!important;
+    transition: 0.5s;
 }
 .card:hover{
     transition: 0.8s;
-    transform: scale(1.02,1);
+    transform: scale(1.01,1);
+}
+.card-text{
+    background-color: #a1eba1;
 }
 .card-img {
     width: 100%;
@@ -155,7 +158,7 @@ ul{
 .manage_order_btn{
     font-size: 12px;
     padding: 3px !important;
-    order: none;
+    border: none;
     display: block;
 }
 

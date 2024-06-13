@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% block head_title %}Profile{% endblock %}
+{% block head_title %}Profile - Fruit Sell{% endblock %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
 
 <div class="container mx-auto d-flex justify-content-between">
-  <div class="text-center rounded rounded-4 shadow-lg p-3 fw-bold mt-4" style="max-width: 200px; height:100vw" >
+  <div class="text-center rounded rounded-4 shadow-lg p-3 fw-bold mt-4" style="max-width: 300px; height:93vh" >
     {% if request.user.account.profile_image %}
     <img class="w-75 rounded-4 shadow-lg" src="{{request.user.account.profile_image.url}}" class="img-fluid rounded-start" alt="...">
     {% else %}
@@ -39,7 +39,7 @@
             {{ order.orderId }}
           </td>
           <td>
-            <ul>
+            <ul style="padding: 0;">
               {% for item in order.order_items.all %}
                   <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
               {% endfor %}
@@ -49,9 +49,9 @@
           <td>{{ order.get_totals }}৳</td>
           <td>{{ order.payment_method }}</td>
           {% if order.order_status == 'Cancelled' %}
-          <td><a class="btn btn-outline-danger manage_order_btn">{{ order.order_status }}</a></td>
+          <td><a class="btn btn-danger manage_order_btn" style="cursor: default;">{{ order.order_status }}</a></td>
           {% else %}
-          <td><a class="btn btn-outline-success manage_order_btn">{{ order.order_status }}</a></td>
+          <td><a class="btn btn-success manage_order_btn" style="cursor: default;">{{ order.order_status }}</a></td>
           {% endif %}          
           {% if order.cancelled == False and order.order_status != 'Delivered' %}
           <td><a href="{% url 'cancel-order' order.id %}" class="btn btn-danger manage_order_btn"> Cancel Order </a></td>

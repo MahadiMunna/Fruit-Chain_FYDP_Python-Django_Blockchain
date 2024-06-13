@@ -19,7 +19,6 @@
           <th scope="col">Total Cost</th>
           <th scope="col">Payment Method</th>
           <th scope="col">Order Status</th>
-          <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -41,13 +40,14 @@
           
           <td>{{ order.get_totals }}৳</td>
           <td>{{ order.payment_method }}</td>
-          <td>{{ order.order_status }}</td>
+          <td>{{ order.order_status }} <br> 
+            {% if order.cancelled == False and order.order_status != 'Delivered' %}
+            <a href="{% url 'update-order-status' order.id %}" class="btn btn-success manage_order_btn"> Update Status </a>
+            {% else %}
+            <a href="{% url 'remove-order' order.id %}" class="btn btn-danger manage_order_btn"> Remove </a>
+            {% endif %}
+        </td>
           
-          {% if order.cancelled == False and order.order_status != 'Delivered' %}
-          <td><a href="{% url 'update-order-status' order.id %}" class="btn btn-success manage_order_btn"> Update Status </a></td>
-          {% else %}
-          <td><a href="{% url 'remove-order' order.id %}" class="btn btn-danger manage_order_btn"> Remove </a></td>
-          {% endif %}
         </tr>
         {% endfor %}
         {% else %}

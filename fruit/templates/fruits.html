@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block head_title %}Home - Fruit sell{% endblock %}
+{% block head_title %}Fruits - Fruit sell{% endblock %}
 
 {% block body %}
 {% load static %}
 <div class="container mx-auto ">
     <h4 class="my-3 fw-bold rounded">All Available Fruits</h4>
-    <div class="row justify-content-around">
+    <div class="row justify-content-start gap-2">
 
 
         {% for fruit in data %}
 
-        <div class="card mb-3 shadow" style="width: 370px; height: fit-content;">
+        <div class="card mb-3" style="width: 370px; height: fit-content;">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center align-items-center">
                     {% if fruit.image %}
@@ -22,7 +22,7 @@
                     {% endif %}
                 </div>
                 <div class="col-8 p-2 ps-0">
-                    <div style="background-color: #dce1e6;" class="rounded">
+                    <div class="card-text">
                         <div class="p-2">
                             <div class="d-flex justify-content-between">
                                 <h6 class="card-title">{{fruit.name}}</h6>

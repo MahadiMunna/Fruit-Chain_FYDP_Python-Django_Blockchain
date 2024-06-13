@@ -14,5 +14,5 @@ class BillingAddress(models.Model):
     postal_code = models.CharField(max_length=10, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.user.first_name} - {self.city}'
+        return f'{self.user.first_name} - {self.district}'
 

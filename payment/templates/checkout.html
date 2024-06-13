@@ -1,5 +1,6 @@
 <!-- checkout.html -->
 {% extends 'base.html' %}
+{% block head_title %}Checkout - Fruit sell{% endblock %}
 {% load cart %}
 {% load static %}
 {% load crispy_forms_tags %}
@@ -74,6 +75,7 @@
                 {% endif %}
             </tbody>
         </table>
+        
         <table class="table table-bordered table-striped shadow-lg rounded ">
             <thead class="text-center">
                 <tr>
@@ -97,8 +99,10 @@
                 </tr>
             </tbody>
         </table>
+        
     </div>
     
+
     <div style="width: 47.5%;">
         <div class="mt-3">
             <h2 class="btn btn-dark text-center w-100 shadow-lg">Shipping Details</h2>
@@ -123,7 +127,7 @@
                                 <div style="width: 47.5%;">
                                     <div class="input-box">
                                         <label for="id_address">Address:</label>
-                                        <textarea rows="4" id="id_address" class="textarea-field" placeholder="Enter your address" name="address">{% if billing_address.instance.address %} {{billing_address.instance.address}}" {% endif %}</textarea>
+                                        <textarea rows="4" id="id_address" class="textarea-field" placeholder="Enter your address" name="address">{% if billing_address.instance.address %} {{billing_address.instance.address}} {% endif %}</textarea>
                                     </div>
                                     <div class="input-box">
                                         <label for="id_postal_code">Postal Code:</label>

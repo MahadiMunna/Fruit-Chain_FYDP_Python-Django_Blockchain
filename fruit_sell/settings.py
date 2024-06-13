@@ -1,3 +1,4 @@
+from django.utils import timezone
 import os
 from pathlib import Path
 import environ
@@ -114,6 +115,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+current_datetime = timezone.localtime(timezone.now())
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -130,3 +133,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STORE_ID = env("STORE_ID")
 STORE_PASS = env("STORE_PASS")
+
+#send mail
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env("EMAIL")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")

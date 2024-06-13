@@ -49,7 +49,7 @@ class UserLogoutView(View):
 class Profile(TemplateView):
     template_name = 'profile.html'
     def get(self, request):
-         orders = Order.objects.filter(user=request.user, ordered=True)
+         orders = Order.objects.filter(user=request.user, ordered=True, removed_from_view=False).order_by('-timestamp')
          return render(request, self.template_name, {'orders': orders})
 
 @method_decorator(login_required, name='dispatch')
@@ -90,21 +90,6 @@ class ChangePasswordView(TemplateView):
         context['form'] = PasswordChangeForm(self.request.user)
         return context
 
-def forgot_pass(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = SetPasswordForm(user=request.user, data=request.POST)
-            if form.is_valid():
-                messages.success(request,'Password has been changed successfully!')
-                form.save()
-                update_session_auth_hash(request, form.user)
-                return redirect('profile')
-        else:
-            form  = SetPasswordForm(user=request.user)
-
-        return render(request, 'forget_pass.html', {'form': form, 'type':'Set a new password'})
-    else:
-        return redirect('signup')
     
    
 

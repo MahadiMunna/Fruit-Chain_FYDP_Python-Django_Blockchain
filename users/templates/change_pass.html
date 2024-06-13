@@ -1,5 +1,6 @@
 <!-- change_password.html -->
 {% extends 'base.html' %}
+{% block head_title %}Change password - Fruit sell{% endblock %}
 
 {% block content %}
 <div class="form d-flex justify-content-center align-items-center mt-2">
@@ -42,7 +43,7 @@
                     <small class="text-dnager ms-2">{{ err }}</small>
                 {% endfor %}
             </div>
-            <small class="ps-2"><a href="{% url 'set_pass' %}">Forgot Password?</a></small><br><br>
+            <small class="ps-2"><a href="{% url 'reset_password' %}">Forgot Password?</a></small><br><br>
             <div>
                 <input class="btn btn-outline-dark w-100 p-2 fw-bold" type="submit" value="Update Password">
             </div>

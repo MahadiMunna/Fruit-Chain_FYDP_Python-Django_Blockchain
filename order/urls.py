@@ -8,6 +8,8 @@ urlpatterns = [
     path('increase-decrease/<int:pk>/<type>', views.increase_decrease , name='increase-decrease'),
     path('cancel/<int:id>/', views.cancel_order, name='cancel-order'),
     path('remove/<int:id>/', views.remove_order, name='remove-order'),
+    path('remove-order/<int:id>/', views.remove_order_by_admin, name='remove-order-admin'),
     path('orders/', views.OrdersView.as_view(), name='orders'),
     path('update-order-status/<int:id>/', views.UpdateOrdersView.as_view(), name='update-order-status'),
+
 ]

@@ -20,7 +20,6 @@
                     <th scope="col">Total Cost</th>
                     <th scope="col">Payment Method</th>
                     <th scope="col">Order Status</th>
-                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,9 +47,9 @@
                         <td>
                             <div class="input-box">
                                 {{ form.order_status }}
+                                <input type="submit" class="btn btn-success manage_order_btn" style="width: 100%; padding: 3px!important;" value="Save">
                             </div>
                         </td>
-                        <td><input type="submit" class="btn btn-success" style="width: 100%; padding: 3px!important;" value="Save"></td>
                     </form>
                 </tr>
                 {% else %}
@@ -71,13 +70,13 @@
 
                     <td>{{ order.get_totals }}৳</td>
                     <td>{{ order.payment_method }}</td>
-                    <td>{{ order.order_status }}</td>
-
-                    {% if order.cancelled == False and oder.order_status != 'Delivered' %}
-                    <td><a href="" class="btn btn-secondary manage_order_btn"> Update Status </a></td>
-                    {% else %}
-                    <td><a href="" class="btn btn-secondary manage_order_btn"> Remove </a></td>
-                    {% endif %}
+                    <td>{{ order.order_status }}
+                        {% if order.cancelled == False and oder.order_status != 'Delivered' %}
+                        <a href="" class="btn btn-secondary manage_order_btn"> Update Status </a>
+                        {% else %}
+                        <a href="" class="btn btn-secondary manage_order_btn"> Remove </a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endif %}
                 {% endfor %}

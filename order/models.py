@@ -10,7 +10,6 @@ class Cart(models.Model):
     quantity = models.IntegerField(default=1)
     purchased = models.BooleanField(default=False)
     timestamp=models.DateTimeField(auto_now_add=True)
-    updated=models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.item} - {self.quantity}"
@@ -47,6 +46,7 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=30, choices=PAYMENT_METHOD)
     order_status = models.CharField(max_length=30, choices=ORDER_STATUS, default='In Queue')
     cancelled = models.BooleanField(default=False)
+    removed_from_view = models.BooleanField(default=False)
 
     def get_totals(self):
         total = 0

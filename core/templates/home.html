@@ -11,9 +11,9 @@
 {% if flashsale  %}
 <div class="container mx-auto ">
     <h4 class="my-2 rounded text-danger fw-bold">Hot deals</h4>
-    <div class="row justify-content-around">
+    <div class="row owl-carousel owl-theme gap-2">
         {% for fruit in flashsale %}
-        <div class="card mb-3 shadow" style="width: 370px; height: fit-content;">
+        <div class="item card mb-3" style="width: 350px; height: fit-content; border: none;">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center align-items-center">
                     {% if fruit.image %}
@@ -24,7 +24,7 @@
                     {% endif %}
                 </div>
                 <div class="col-8 p-2 ps-0">
-                    <div style="background-color: #dce1e6;" class="rounded">
+                    <div class="card-text">
                         <div class="p-2">
                             <div class="d-flex justify-content-between">
                                 <h6 class="card-title">{{fruit.name}}</h6>
@@ -89,12 +89,12 @@
 {% endif %}
 <div class="container mx-auto ">
     <h4 class="my-2 rounded text-success fw-bold">Get more fresh Fruits from here</h4>
-    <div class="row justify-content-around">
+    <div class="row ">
 
 
-        {% for fruit in data %}
+        {% for fruit in data|slice:":6" %}
 
-        <div class="card mb-3 shadow" style="width: 370px; height: fit-content;">
+        <div class="card mb-3" style="width: 373px; height: fit-content; border: none;">
             <div class="row">
                 <div class="col-4 d-flex justify-content-center align-items-center">
                     {% if fruit.image %}
@@ -105,7 +105,7 @@
                     {% endif %}
                 </div>
                 <div class="col-8 p-2 ps-0">
-                    <div style="background-color: #dce1e6;" class="rounded">
+                    <div class="card-text">
                         <div class="p-2">
                             <div class="d-flex justify-content-between">
                                 <h6 class="card-title">{{fruit.name}}</h6>
@@ -166,28 +166,40 @@
 
         {% endfor %}
 
+        <p class="text-center"><a class="btn btn-primary w-50" href="{% url 'fruits' %}">See All Fruits</a></p>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static './script/owl.carousel.min.js' %}"></script>
 <script>
-    $('.owl-carousel').owlCarousel({
+var owl = $('.owl-carousel');
+owl.owlCarousel({
     loop:true,
-    margin:10,
-    nav:true,
+    nav:false,
+    dots:true,
     responsive:{
         0:{
             items:1
         },
         600:{
+            items:2
+        },            
+        960:{
             items:3
         },
-        1000:{
-            items:5
+        1200:{
+            items:3
         }
     }
-})
+});
+owl.on('mousewheel', '.owl-stage', function (e) {
+    if (e.deltaY>0) {
+        owl.trigger('next.owl');
+    } else {
+        owl.trigger('prev.owl');
+    }
+    e.preventDefault();
+});
 </script>
 {% endblock %}

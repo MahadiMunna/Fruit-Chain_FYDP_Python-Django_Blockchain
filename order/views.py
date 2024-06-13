@@ -1,12 +1,20 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from core.views import send_email
 from fruit.models import FruitModel
 from order.forms import OrderForm
 from .models import Cart, Order
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
+from fruit_sell.settings import current_datetime
+import datetime
+from .forms import OrderForm, OrderFormSet
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 
 # Create your views here.
 @login_required
@@ -113,7 +121,8 @@ def increase_decrease(request, pk, type):
 def remove_order(request, id):
     order = Order.objects.filter(id=id, user=request.user)
     order.delete()
-    return redirect('profile')
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 @login_required    
 def cancel_order(request, id):
@@ -121,13 +130,16 @@ def cancel_order(request, id):
     order.cancelled = True
     order.order_status = 'Cancelled'
     order.save()
-    return redirect('profile')
+    messages.warning(request, 'Your order has been cancelled!')
+    send_email(request.user, request.user.email, "Order cancelled!", "cancel_mail.html")
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)
 
 class OrdersView(TemplateView):
     template_name = 'orders.html'
 
     def get(self, request):
-         orders = Order.objects.filter(ordered=True)
+         orders = Order.objects.filter(ordered=True).order_by('-timestamp')
          return render(request, self.template_name, {'orders': orders})
 
 class UpdateOrdersView(TemplateView):
@@ -138,7 +150,7 @@ class UpdateOrdersView(TemplateView):
          order_id = kwargs.get(self.pk_url_kwarg)
          order_instance =  get_object_or_404(Order, id=order_id)
          form = OrderForm(instance=order_instance)
-         orders = Order.objects.filter(ordered=True)
+         orders = Order.objects.filter(ordered=True).order_by('-timestamp')
          return render(request, self.template_name, {'form':form, 'orders': orders, 'order_instance':order_instance})
 
     def post(self, request, *args, **kwargs):
@@ -153,3 +165,9 @@ class UpdateOrdersView(TemplateView):
             messages.success(self.request, 'Order status updated successfully!')
             return redirect('orders')
         return render(request, self.template_name, {'form': form})
+
+@login_required
+def remove_order_by_admin(request, id):
+    Order.objects.filter(id=id)[0].delete()
+    referer_url = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(referer_url)

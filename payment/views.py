@@ -4,6 +4,8 @@ from sslcommerz_python.payment import SSLCSession
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from decimal import Decimal
+
+from core.views import send_email
 from .forms import BillingAddressForm, PaymentMethodForm
 from .models import BillingAddress
 from django.views.generic import TemplateView
@@ -12,6 +14,7 @@ from fruit_sell.settings import STORE_ID, STORE_PASS
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from fruit_sell.settings import current_datetime
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
@@ -63,6 +66,7 @@ class CheckoutTemplateView(TemplateView):
                     order.ordered = True
                     order.orderId = order.id
                     order.paymentId = pay_method.payment_method
+                    order.timestamp = current_datetime
                     order.save()
 
                     cart_items = Cart.objects.filter(user=request.user, purchased=False)
@@ -70,8 +74,10 @@ class CheckoutTemplateView(TemplateView):
                         item.purchased = True
                         item.save()
                     messages.success(request,f'Your order successfully placed for delivery!')
+                    send_email(request.user, request.user.email, "Order placed successfully", "order_mail.html")
                     return redirect('home')
-                if pay_method.payment_method == 'SSLCOMMERZ':
+                
+                elif pay_method.payment_method == 'SSLCOMMERZ':
                     store_id = STORE_ID
                     store_pass = STORE_PASS
 
@@ -116,19 +122,23 @@ def sslc_status(request):
             val_id = payment_data['val_id']
             tran_id = payment_data['tran_id']
 
-            return HttpResponseRedirect(reverse('sslc_complete', kwargs={'val_id': val_id, 'tran_id': tran_id}))
-
+            return HttpResponseRedirect(reverse('sslc_complete', kwargs={'val_id':val_id, 'tran_id': tran_id}))
+        elif status == 'FAILED':
+            messages.warning(request,f'Payment failed. Please try again.!')
+            return redirect('home')
 @login_required
-def sslc_complete(request, val_id, tran_id):
+def sslc_complete(request,val_id, tran_id):
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     order = order_qs[0]
     order.ordered = True
-    order.orderId = val_id
+    order.orderId = order.id
     order.paymentId = tran_id
+    order.timestamp = current_datetime
     order.save()
     cart_items = Cart.objects.filter(user=request.user, purchased=False)
     for item in cart_items:
         item.purchased = True
         item.save()
-    messages.success(request,f'You have purchsed the order successfully. Your order placed for delivery!')
+    messages.success(request,f'You have purchased the order successfully. Your order placed for delivery!')
+    send_email(request.user, request.user.email, "Order placed successfully", "order_mail.html")
     return redirect('home')
