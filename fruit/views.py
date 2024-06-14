@@ -2,10 +2,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.views.generic import DetailView
-from fruit.models import FruitModel, Vendor, Wishlist
+from fruit.models import FruitModel, Vendor, Wishlist, Comment
 from django.contrib import messages
 from .forms import FruitForm, VendorForm, CommentForm
-
+from order.models import Order
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -19,24 +19,39 @@ class DetailFruitView(DetailView):
     template_name = 'fruit_details.html'
 
     def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(data=self.request.POST)
+        comment_form = CommentForm(request.POST, request.FILES)
         post = self.get_object()
-        name = self.request.user.account
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.post = post
-            new_comment.name = name
-            new_comment.save()
-        return self.get(request, *args, **kwargs)
-    
-    def get_context_data(self, **kwargs):
+        user_account = request.user.account
 
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.name = user_account
+            comment.post = post
+            comment.save()
+            messages.success(request, 'Thank you for your review!')
+        else:
+            messages.error(request, 'Error! Review not saved.')
+            print(comment_form.errors)  # For debugging
+
+        return self.get(request, *args, **kwargs)
+
+    def reviewer(self, user, fruit):
+        delivered_orders = Order.objects.filter(user=user, order_status='Delivered', ordered=True)
+        for order in delivered_orders:
+            if order.order_items.filter(item=fruit).exists():
+                return True
+        return False
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         post = self.object
         comments = post.comments.all()
         comment_form = CommentForm()
+        can_review = self.reviewer(user, post)
         context['comments'] = comments
         context['comment_form'] = comment_form
+        context['can_review'] = can_review
         return context
 
 @login_required

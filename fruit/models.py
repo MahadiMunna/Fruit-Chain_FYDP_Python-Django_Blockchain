@@ -45,8 +45,10 @@ class Wishlist(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(FruitModel, on_delete=models.CASCADE, related_name='comments')
     name = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
-    comment = models.TextField()
+    review = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='./review-images/uploads/', blank=True, null=True)
+    rate = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Comments by {self.name}"
+        return f"Review by {self.name}"

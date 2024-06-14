@@ -165,3 +165,25 @@ ul{
 table{
     font-size: 14px;
 }
+
+/* rating */
+.rating{
+    display: none;
+}
+.label{
+    cursor: pointer;
+    padding: 0 0.1rem;
+    font-size: 1.5rem;
+}
+.fa-star{
+    color: orange;
+}
+.rating:checked ~ .label .fa-star{
+    color: #ddd;
+}
+.rate-group:hover ~ .label .fa-star{
+    color: orange;
+}
+.rating:hover ~ .label .fa-star{
+    color: #ddd;
+}

@@ -14,7 +14,20 @@ class VendorForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['comment']
+        fields = ['image', 'review', 'rate']
         widgets = {
-          'comment': forms.Textarea(attrs={'rows':3}),
+            'review': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter Your review here'}),
+            'rate': forms.RadioSelect(choices=[(i, i) for i in range(1, 6)]),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        review = cleaned_data.get('review')
+        rate = cleaned_data.get('rate')
+
+        if not review:
+            self.add_error('review', 'This field is required.')
+        if not rate:
+            self.add_error('rate', 'This field is required.')
+
+        return cleaned_data

@@ -19,12 +19,13 @@
       <p>{{object.description}}</p>
       <div class="mb-1">
         <small class="fw-bold">Fruit From: {{object.location}}</small><br>
-        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br><br>
-        
+        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br>
+        <small class="fw-bold">Expiry Date: {{object.expiry_date}}</small><br><br>
+
         {% if object.discount > 0 %}
         <h6 class="fw-bold"><s>{{object.price}}৳</s> <span
-                class="text-danger">{{object.get_discounted_price}}৳/kg</span> </h6>
-                <h6 class="text-danger fw-bold"> {{object.discount}}% Discount</h6><br>
+            class="text-danger">{{object.get_discounted_price}}৳/kg</span> </h6>
+        <h6 class="text-danger fw-bold"> {{object.discount}}% Discount</h6><br>
         {% else %}
         <h6 class="fw-bold">{{object.price}}৳/kg</h6><br>
         {% endif %}
@@ -35,35 +36,102 @@
 </div>
 
 
-<div class="my-3">
-  <div class="container mx-auto m-2">
+<div class="d-flex justify-content-between my-3">
+  <div style="width: 47.5%;" class="container mx-auto m-2">
     {% if comments %}
-    <h4 class="text-center alert alert-info m-3">Total number of comments: {{comments | length}}</h4>
-    <div class="card-body">
+    <h4 class="text-center alert alert-info m-3">Total number of reviews: {{comments | length}}</h4>
+    <div class="card-body m-3">
       {% for comment in comments %}
       <div class="border rounded p-2 mb-2">
-        <p class="text-primary"><b>{{comment.name}}</b> <small
-            class="text-secondary fw-bold">{{comment.created_on}}</small></p>
-        <p class="fw-bold">{{comment.comment}}</p>
+        <div class="d-flex justify-content-between">
+          <p class="text-primary"><b>{{comment.name}}</b> <small
+              class="text-secondary fw-bold">{{comment.created_on}}</small></p>
+          <div>
+            {% for i in '01234' %}
+            {% if forloop.counter0 < comment.rate %} <i class="fa fa-star" style="color: orange;"></i>
+              {% else %}
+              <i class="fa fa-star" style="color:#ddd;"></i>
+              {% endif %}
+              {% endfor %}
+          </div>
+        </div>
+        {% if comment.image %}
+        <img class="w-50" src="{{ comment.image.url }}" alt="">
+        {% endif %}
+        <p class="fw-bold">{{comment.review}}</p>
       </div>
       {% endfor %}
       {% else %}
-      <h5 class="text-center alert alert-info m-3">No comments found on this post!</h5>
+      <h5 class="text-center alert alert-info m-3">No reviews found on this post!</h5>
       {% endif %}
     </div>
   </div>
-  <div class="container mx-auto m-2">
-    {% if request.user.is_authenticated %}
-    <div class="card-body">
-      <form action="" method="post">
+  <div style="width: 47.5%;" class="container mx-auto m-2">
+    <h4 class="text-center alert alert-info m-3">Add Review</h4>
+    {% if can_review %}
+    <div class="card-body m-3">
+      <form enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
-        {{comment_form | crispy}}
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+          <strong>Error!</strong> Please correct the following errors:
+          <ul>
+            {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+            <li>{{ field }}: {{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        <div class="d-flex justify-content-between">
+          <div style="width: 47.5%;">
+            <div>
+              <img id="previewImage" class="uploaded-image center-image" src="{% static './images/up.png' %}"
+                alt="Preview Image">
+            </div>
+            <div class="input-box">
+              <div class="input-box">
+                <label for="uploadImage">Upload Image:</label>
+                <input type="file" id="uploadImage" class="input-field" name="image" onchange="displayImage()">
+                <label class="up-image-label overflow-hidden" for="uploadImage">
+                  <i class="fa-solid fa-upload me-2"></i>
+                  <span class="image-label ">Upload image</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div style="width: 47.5%;" class="input-box">
+            <label>Rate our product:</label>
+            <div class="rating-stars">
+              <label for="star-1" class="label"><i class="fa fa-star"></i></label>
+              <input class="rating" type="radio" id="star-1" name="rate" value="1">
 
-        <button class="btn btn-success">Comment</button>
+              <label for="star-2" class="label"><i class="fa fa-star"></i></label>
+              <input class="rating" type="radio" id="star-2" name="rate" value="2">
+
+              <label for="star-3" class="label"><i class="fa fa-star"></i></label>
+              <input class="rating" type="radio" id="star-3" name="rate" value="3">
+
+              <label for="star-4" class="label"><i class="fa fa-star"></i></label>
+              <input class="rating" type="radio" id="star-4" name="rate" value="4">
+
+              <label for="star-5" class="label"><i class="fa fa-star"></i></label>
+              <input class="rating" type="radio" id="star-5" name="rate" value="5">
+            </div>
+            <div>
+              <label for="id_review">Write your review:</label>
+              <textarea id="id_review" name="review" class="textarea-field" rows="4"
+                placeholder="Enter Your review here"></textarea>
+            </div>
+          </div>
+        </div>
+        <input type="submit" class="btn btn-outline-success w-100 p-2 fw-bold" value="Add review" />
+
       </form>
     </div>
     {% else %}
-    <h5 class="text-center alert alert-danger m-3">Login first for posting comments!</h5>
+    <h5 class="text-center alert alert-danger m-3">You will be able to review after getting the product!</h5>
     {% endif %}
   </div>
 </div>

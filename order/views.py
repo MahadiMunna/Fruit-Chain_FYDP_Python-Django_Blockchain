@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from core.views import send_email
@@ -9,11 +9,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from fruit_sell.settings import current_datetime
-import datetime
-from .forms import OrderForm, OrderFormSet
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+from datetime import timedelta
+from .forms import OrderForm
+import openpyxl
 
 
 # Create your views here.
@@ -137,21 +135,22 @@ def cancel_order(request, id):
 
 class OrdersView(TemplateView):
     template_name = 'orders.html'
-
     def get(self, request):
+         yesterday = current_datetime - timedelta(days=1)
          orders = Order.objects.filter(ordered=True).order_by('-timestamp')
-         return render(request, self.template_name, {'orders': orders})
+         return render(request, self.template_name, {'orders': orders, 'current_datetime':current_datetime, 'yesterday':yesterday})
 
 class UpdateOrdersView(TemplateView):
     template_name = 'update_orders.html'
     pk_url_kwarg = 'id'
 
     def get(self, request, *args, **kwargs):
+         yesterday = current_datetime - timedelta(days=1)
          order_id = kwargs.get(self.pk_url_kwarg)
          order_instance =  get_object_or_404(Order, id=order_id)
          form = OrderForm(instance=order_instance)
          orders = Order.objects.filter(ordered=True).order_by('-timestamp')
-         return render(request, self.template_name, {'form':form, 'orders': orders, 'order_instance':order_instance})
+         return render(request, self.template_name, {'form':form, 'orders': orders, 'order_instance':order_instance,'current_datetime':current_datetime, 'yesterday':yesterday})
 
     def post(self, request, *args, **kwargs):
         order_id = kwargs.get(self.pk_url_kwarg)
@@ -165,6 +164,40 @@ class UpdateOrdersView(TemplateView):
             messages.success(self.request, 'Order status updated successfully!')
             return redirect('orders')
         return render(request, self.template_name, {'form': form})
+
+def export_orders_to_excel(request):
+    orders = Order.objects.filter(ordered=True).order_by('-timestamp')
+
+    # Create a new workbook and select the active worksheet
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Orders"
+
+    # Define the columns and write the header
+    columns = ["Order Id", "Customer", "Date & Time", "Ordered Items", "Total Cost", "Payment Method", "Order Status"]
+    ws.append(columns)
+
+    # Write data to the worksheet
+    for order in orders:
+        items = ", ".join([f"{item.item.name} x {item.quantity}(kg)" for item in order.order_items.all()])
+        ws.append([
+            order.orderId,
+            f"{order.user.first_name} {order.user.last_name}",
+            order.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            items,
+            f"{order.get_totals()}৳",
+            order.payment_method,
+            order.order_status
+        ])
+
+    # Set the response content type and headers
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="orders.xlsx"'
+
+    # Save the workbook to the response
+    wb.save(response)
+    return response
+
 
 @login_required
 def remove_order_by_admin(request, id):

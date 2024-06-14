@@ -134,6 +134,7 @@ def sslc_complete(request,val_id, tran_id):
     order.orderId = order.id
     order.paymentId = tran_id
     order.timestamp = current_datetime
+    print(current_datetime)
     order.save()
     cart_items = Cart.objects.filter(user=request.user, purchased=False)
     for item in cart_items:

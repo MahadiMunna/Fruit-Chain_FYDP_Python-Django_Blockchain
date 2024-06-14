@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
-{% block head_title %}Profile{% endblock %}
+{% block head_title %}Manage Orders - FruitChain{% endblock %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
 
-<div class="container mx-auto row justify-content-center">
+<div class="container mx-auto text-center">
   
-  <div class="container mx-auto text-center">
-    <p style="margin: 50px 0px 20px 0px;" class="text-center fw-bold p-3 rounded fs-5"><span class="alert alert-danger">Manage Orders</span>
-    </p>
+    <div class="d-flex justify-content-between my-3">
+      <h4 class="fw-bold">Manage Orders</h4>
+      <a href="{% url 'export_orders_to_excel' %}" class="btn btn-outline-primary">Export to Excel</a>
+    </div>
     {% if orders %}
     <table style="margin-bottom: 200px; font-size: 14px;" class="table table-striped border border-3 shadow">
       <thead>
         <tr>
           <th scope="col">Order Id</th>
           <th scope="col">Customer</th>
+          <th scope="col">Date & Time</th>
           <th scope="col">Ordered Items</th>
           <th scope="col">Total Cost</th>
           <th scope="col">Payment Method</th>
@@ -31,7 +33,16 @@
             {{ order.user.first_name }} {{ order.user.last_name }}
           </td>
           <td>
-            <ul>
+            {% if current_datetime|date == order.timestamp|date %}
+            <span class="text-success fw-bold">Today, </span>{{ order.timestamp|time }}
+            {% elif yesterday|date == order.timestamp|date %}
+            <span class="text-primary fw-bold">Yesterday, </span>{{ order.timestamp|time }}
+            {% else %}
+            {{ order.timestamp }}
+            {% endif %}
+          </td>
+          <td>
+            <ul style="padding: 0;">
               {% for item in order.order_items.all %}
                   <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
               {% endfor %}
@@ -40,11 +51,18 @@
           
           <td>{{ order.get_totals }}৳</td>
           <td>{{ order.payment_method }}</td>
-          <td>{{ order.order_status }} <br> 
-            {% if order.cancelled == False and order.order_status != 'Delivered' %}
-            <a href="{% url 'update-order-status' order.id %}" class="btn btn-success manage_order_btn"> Update Status </a>
+          <td>
+            {% if order.order_status == 'Delivered' %}
+            <span class="text-success fw-bold">{{ order.order_status }}</span> 
+            {% elif order.order_status == 'Cancelled' %}
+            <span class="text-danger fw-bold">{{ order.order_status }}</span> 
             {% else %}
-            <a href="{% url 'remove-order' order.id %}" class="btn btn-danger manage_order_btn"> Remove </a>
+            <span class="text-primary fw-bold">{{ order.order_status }}</span>
+            {% endif %}
+            {% if order.cancelled == False and order.order_status != 'Delivered' %}
+            <a href="{% url 'update-order-status' order.id %}" title="Update Status" > <i class="fa-solid fa-pen-to-square text-primary fs-5"></i></a>
+            {% else %}
+            <a href="{% url 'remove-order' order.id %}" title="Remove Record" > <i class="fa-solid fa-circle-xmark text-danger fs-5"></i></a>
             {% endif %}
         </td>
           
