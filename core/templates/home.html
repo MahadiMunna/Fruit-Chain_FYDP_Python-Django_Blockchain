@@ -44,9 +44,9 @@
                             {% else %}
                             {% if fruit.discount > 0 %}
                             <small class="fw-bold"><s>{{fruit.price}}৳</s> <span
-                                    class="text-danger">{{fruit.get_discounted_price}}৳/kg</span> </small><br>
+                                    class="text-danger">{{fruit.get_discounted_price}}৳ per {{fruit.unit}}</span> </small><br>
                             {% else %}
-                            <small class="fw-bold">{{fruit.price}}৳/kg</small><br>
+                            <small class="fw-bold">{{fruit.price}}৳ per {{fruit.unit}}</small><br>
                             {% endif %}
                             {% endif %}
 
@@ -125,9 +125,9 @@
                             {% else %}
                             {% if fruit.discount > 0 %}
                             <small class="fw-bold"><s>{{fruit.price}}৳</s> <span
-                                    class="text-danger">{{fruit.get_discounted_price}}৳/kg</span> </small><br>
+                                    class="text-danger">{{fruit.get_discounted_price}}৳ per {{fruit.unit}}</span> </small><br>
                             {% else %}
-                            <small class="fw-bold">{{fruit.price}}৳/kg</small><br>
+                            <small class="fw-bold">{{fruit.price}}৳ per {{fruit.unit}}</small><br>
                             {% endif %}
                             {% endif %}
 

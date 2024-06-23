@@ -60,7 +60,7 @@ label{
 .textarea-field{
     width: 100%;
     font-size: 14px;
-    padding: 5px 20px;
+    padding: 5px 10px;
     margin-bottom: 10px;
     border-radius: 10px;
     border: none;
@@ -147,6 +147,19 @@ input[type="file"]{
 }
 .card-btn:hover{
     background-color: rgb(5, 102, 182);
+    box-shadow: 0 10px 8px -5px rgba(0,0,0,0.2);
+    transform: scale(1.05,1);
+}
+
+.page-btn{
+    font-size: 12px;
+    padding: 5px!important;
+    margin: 2px;
+    border: none;
+    transition: 0.3s;
+}
+.page-btn:hover{
+    background-color: rgb(5, 17, 182);
     box-shadow: 0 10px 8px -5px rgba(0,0,0,0.2);
     transform: scale(1.05,1);
 }

@@ -19,7 +19,7 @@
                     <th>Image</th>
                     <th>Item Name</th>
                     <th>Price</th>
-                    <th>Quantity (kg)</th>
+                    <th>Quantity</th>
                     <th>Total</th>
                     <th>Remove Item</th>
                 </tr>
@@ -37,7 +37,7 @@
                             class="img-fluid rounded" alt="No Image">
                         {% endif %}
                     </td>
-                    <td>{{ cart.item.name }}</td>
+                    <td><a style="text-decoration: none;" href="{% url 'details' id=cart.item.id %}">{{ cart.item.name }}-{{ cart.item.unit }}</a></td>
                     
                     {% if cart.item.discount > 0 %}
                     <td><s>{{ cart.item.price }}</s>৳ <br><span class="text-danger">{{ cart.item.get_discounted_price }}৳</span></td>
@@ -45,19 +45,7 @@
                     <td>{{ cart.item.price }}৳</td>
                     {% endif %}
                     <td>
-                        <div class="text-center">
-                                <p class="m-0">
-                                    <span class="input-group-btn">
-                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}"
-                                            class="btn btn-outline-secondary btn-sm">-</a>
-                                    </span>
-                                    <input style="width: 25px;" type="text" class="text-center" value="{{ cart.quantity }}" readonly>
-                                    <span class="input-group-btn">
-                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}"
-                                            class="btn btn-outline-secondary btn-sm">+</a>
-                                    </span>
-                                </p>
-                        </div>
+                        <small><a href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}"><i class="fa-solid fa-minus"></i></a><input style="width: 20px;" type="text" class="text-center"  value="{{ cart.quantity }}" readonly><a class="ms-1" href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}"><i class="fa-solid fa-plus"></i></a></small>
                     </td>
                     <td>{{ cart.get_total }}৳</td>
                     <td><a href="{% url 'remove' pk=cart.item.id %}" class="btn btn-danger manage_order_btn">Remove</a></td>
@@ -89,7 +77,7 @@
             <tbody class="text-center">
                 {% for item in order_item %}
                 <tr>
-                    <td>{{ item.item.name }} x {{item.quantity}}</td>
+                    <td>{{ item.item.name }}-{{ item.item.unit }} x {{item.quantity}}</td>
                     <td>{{ item.get_total }}৳</td>
                 </tr>
                 {% endfor %}
@@ -127,7 +115,7 @@
                                 <div style="width: 47.5%;">
                                     <div class="input-box">
                                         <label for="id_address">Address:</label>
-                                        <textarea rows="4" id="id_address" class="textarea-field" placeholder="Enter your address" name="address">{% if billing_address.instance.address %} {{billing_address.instance.address}} {% endif %}</textarea>
+                                        <textarea rows="4" id="id_address" class="textarea-field" placeholder="Enter your address" name="address">{% if billing_address.instance.address %}{{billing_address.instance.address}}{% endif %}</textarea>
                                     </div>
                                     <div class="input-box">
                                         <label for="id_postal_code">Postal Code:</label>

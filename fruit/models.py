@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from users.models import UserAccount
+from blockchain import add_fruit
 
 # Create your models here.
 class Vendor(models.Model):
@@ -12,6 +13,7 @@ class Vendor(models.Model):
     def __str__(self):
         return f"{self.vendor_name}"
 class FruitModel(models.Model):
+    blockchain_id = models.CharField(max_length=100, blank=True, null=True)
     name=models.CharField(max_length=100)
     image=models.ImageField(upload_to='./fruit-images/', blank=True, null=True)
     description=models.TextField()
@@ -20,6 +22,7 @@ class FruitModel(models.Model):
     supply_date=models.DateField(blank=True, null=True)
     expiry_date=models.DateField(blank=True, null=True)
     price=models.DecimalField(max_digits=8, decimal_places=2)
+    unit=models.CharField(max_length=100, blank=True, null=True)
     discount=models.DecimalField(max_digits=8, decimal_places=2,default=0)
     stocked_out = models.BooleanField(default=False)
     flash_sale = models.BooleanField(default=False)
@@ -34,6 +37,24 @@ class FruitModel(models.Model):
             return format(discounted_price, "0.2f")
         else:
             return self.price
+        
+    def save_to_blockchain(self):
+        try:
+            receipt = add_fruit(
+                self.name,
+                self.location,
+                str(self.supply_date),
+                str(self.expiry_date),
+                self.vendor.vendor_name,
+                self.description,  # Assuming description is used as trace_info
+                self.id
+            )
+            self.blockchain_id = receipt['transactionHash'].hex()
+            self.save()
+            # print(f"Blockchain ID saved: {self.blockchain_id}")
+        except Exception as e:
+            print(f"Error saving to blockchain: {e}")
+            raise
 
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

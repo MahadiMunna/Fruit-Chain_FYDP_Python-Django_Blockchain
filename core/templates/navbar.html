@@ -1,5 +1,8 @@
+{% load static %}
 <nav>
-    <h4 class="mb-5 text-center">Fruit Sell</h4>
+    <div class="d-flex justify-content-center align-items-center mb-5">
+        <h5 class="text-center text-success">FruitChain</h5>
+    </div>
     <div class="mx-2">
         <ul class="list-unstyled">
             <li {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i>Home</a></li>

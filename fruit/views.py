@@ -7,10 +7,14 @@ from django.contrib import messages
 from .forms import FruitForm, VendorForm, CommentForm
 from order.models import Order
 from django.contrib.auth.decorators import login_required
+from blockchain import get_fruit
+from django.core.paginator import Paginator
 
 # Create your views here.
 def available_fruits(request):
-    data = FruitModel.objects.filter(stocked_out=False)
+    p = Paginator(FruitModel.objects.filter(stocked_out=False),9)
+    page = request.GET.get('page')
+    data = p.get_page(page)
     return render(request, 'fruits.html', {'data':data })
 
 class DetailFruitView(DetailView):
@@ -19,6 +23,9 @@ class DetailFruitView(DetailView):
     template_name = 'fruit_details.html'
 
     def post(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return self.get(request, *args, **kwargs)
+         
         comment_form = CommentForm(request.POST, request.FILES)
         post = self.get_object()
         user_account = request.user.account
@@ -30,12 +37,15 @@ class DetailFruitView(DetailView):
             comment.save()
             messages.success(request, 'Thank you for your review!')
         else:
-            messages.error(request, 'Error! Review not saved.')
+            messages.warning(request, 'Error! Review not saved.')
             print(comment_form.errors)  # For debugging
 
-        return self.get(request, *args, **kwargs)
+        referer_url = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(referer_url)
 
     def reviewer(self, user, fruit):
+        if not user.is_authenticated:
+            return False
         delivered_orders = Order.objects.filter(user=user, order_status='Delivered', ordered=True)
         for order in delivered_orders:
             if order.order_items.filter(item=fruit).exists():
@@ -46,12 +56,21 @@ class DetailFruitView(DetailView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         post = self.object
-        comments = post.comments.all()
+        comments = post.comments.all().order_by('-created_on')
         comment_form = CommentForm()
         can_review = self.reviewer(user, post)
         context['comments'] = comments
         context['comment_form'] = comment_form
         context['can_review'] = can_review
+        if post.blockchain_id:
+            try:
+                blockchain_data = get_fruit(post.id)
+                # Add debugging prints
+                # print(f"Blockchain data for fruit ID {post.id}: {blockchain_data}")
+                context['blockchain_data'] = blockchain_data
+            except Exception as e:
+                print(f"Error fetching blockchain data: {e}")
+                context['blockchain_data'] = None
         return context
 
 @login_required
@@ -66,19 +85,28 @@ def add_fruit(request):
             location = fruit_form.cleaned_data.get("location")
             vendor = fruit_form.cleaned_data.get("vendor")
             supply_date = fruit_form.cleaned_data.get("supply_date")
+            expiry_date = fruit_form.cleaned_data.get("expiry_date")
+            unit = fruit_form.cleaned_data.get("unit")
             price = fruit_form.cleaned_data.get("price")
             discount = fruit_form.cleaned_data.get("discount")
-            FruitModel.objects.create(
+            new_fruit = FruitModel.objects.create(
                 name=name,
                 description=description,
                 location=location,
                 supply_date=supply_date,
+                expiry_date=expiry_date,
+                unit=unit,
                 price=price,
                 image=image,
                 vendor=vendor,
                 discount=discount
             )
-            messages.success(request, 'New fruit added successfully!')
+            try:
+                new_fruit.save_to_blockchain()
+                messages.success(request, 'New fruit added and saved to blockchain successfully!')
+            except Exception as e:
+                messages.warning(request, f"Error adding fruit to blockchain: {e}")
+            # messages.success(request, 'New fruit added successfully!')
             return redirect('fruits')
     else:
         fruit_form = FruitForm()
@@ -100,9 +128,12 @@ class EditFruitView(View):
     def post(self, request, *args, **kwargs):
         fruit_id = kwargs.get(self.pk_url_kwarg)
         fruit_instance = get_object_or_404(FruitModel, id=fruit_id)
+        blockchain_id = fruit_instance.blockchain_id
         form = FruitForm(request.POST, request.FILES, instance=fruit_instance)
         if form.is_valid():
-            form.save()
+            fruit_instance = form.save(commit=False)
+            fruit_instance.blockchain_id = blockchain_id
+            fruit_instance.save()
             messages.success(self.request, 'Fruit post updated successfully!')
             referer_url = request.META.get('HTTP_REFERER', '/')
             return HttpResponseRedirect(referer_url)

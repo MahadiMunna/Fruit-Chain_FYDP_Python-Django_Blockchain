@@ -8,28 +8,45 @@
   <div class="d-flex flex-lg-row flex-column gap-3 justify-content-center align-items-center">
     <div class="col me-lg-3">
       {% if object.image %}
-      <img src="{{object.image.url}}" class="w-100 rounded" alt="...">
+      <img src="{{object.image.url}}" class="w-100 rounded center-image" alt="...">
       {% else %}
-      <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded" alt="...">
+      <img src="{% static './images/No-Image-Placeholder.svg' %}" class="img-fluid rounded center-image" alt="...">
       {% endif %}
     </div>
     <div class="col w-auto" style="max-width: 700px;">
-      <h3 class="text-success">{{object.name}}</h3>
+      <h4 class="text-primary">{{object.name}}</h4>
       <small class="text-secondary">{{object.timestamp}}</small>
       <p>{{object.description}}</p>
-      <div class="mb-1">
-        <small class="fw-bold">Fruit From: {{object.location}}</small><br>
-        <small class="fw-bold">Supply Date: {{object.supply_date}}</small><br>
-        <small class="fw-bold">Expiry Date: {{object.expiry_date}}</small><br><br>
 
-        {% if object.discount > 0 %}
-        <h6 class="fw-bold"><s>{{object.price}}৳</s> <span
-            class="text-danger">{{object.get_discounted_price}}৳/kg</span> </h6>
-        <h6 class="text-danger fw-bold"> {{object.discount}}% Discount</h6><br>
-        {% else %}
-        <h6 class="fw-bold">{{object.price}}৳/kg</h6><br>
-        {% endif %}
-        <a class="btn p-1 btn-primary" href="{% url 'add-to-cart' object.id %}">Add to Cart</a>
+      <div class="d-flex justify-content-between">
+        <!-- price  -->
+        <div>
+          {% if object.discount > 0 %}
+          <h6 class="fw-bold"><s>{{object.price}}৳</s> <span class="text-danger">{{object.get_discounted_price}}৳ per {{object.unit}}</span> </h6>
+          <h6 class="text-danger fw-bold"> {{object.discount}}% Discount</h6><br>
+          {% else %}
+          <h6 class="fw-bold">{{object.price}}৳ per {{object.unit}}</h6><br>
+          {% endif %}
+          <a class="btn p-1 btn-primary" href="{% url 'add-to-cart' object.id %}">Add to Cart</a>
+        </div>
+
+        <!-- blockchain data  -->
+        <div>
+          <button class="btn btn-secondary page-btn mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            See Trace Details<i class="fa-solid fa-angles-down ms-1"></i>
+          </button>
+          <div class="collapse" id="collapseExample">
+              {% if blockchain_data %}
+                <small><span class=" fw-bold text-success">Origin: {{ blockchain_data.1 }}</span></small><br>
+                <small><span class="fw-bold text-secondary">Supply Date: {{ blockchain_data.2 }}</span></small><br>
+                <small><span class="fw-bold text-secondary">Expiry Date: {{ blockchain_data.3 }}</span></small><br>
+                <small><span class="fw-bold">Vendor: {{ blockchain_data.4 }}</span></small>
+              {% else %}
+                <p>No blockchain data available.</p>
+              {% endif %} <br>
+          </div>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -45,20 +62,20 @@
       <div class="border rounded p-2 mb-2">
         <div class="d-flex justify-content-between">
           <p class="text-primary"><b>{{comment.name}}</b> <small
-              class="text-secondary fw-bold">{{comment.created_on}}</small></p>
+              class="text-secondary" style="font-size: 12px;">{{comment.created_on}}</small></p>
           <div>
             {% for i in '01234' %}
-            {% if forloop.counter0 < comment.rate %} <i class="fa fa-star" style="color: orange;"></i>
+            {% if forloop.counter0 < comment.rate %} <i class="fa fa-star" style="color: orange; font-size: 12px;"></i>
               {% else %}
-              <i class="fa fa-star" style="color:#ddd;"></i>
+              <i class="fa fa-star" style="color:#ddd;font-size: 12px;"></i>
               {% endif %}
               {% endfor %}
           </div>
         </div>
         {% if comment.image %}
-        <img class="w-50" src="{{ comment.image.url }}" alt="">
-        {% endif %}
-        <p class="fw-bold">{{comment.review}}</p>
+        <img class="w-25" src="{{ comment.image.url }}" alt=""><br>
+        {% endif %} 
+        <small class="mt-2">{{comment.review}}</small>
       </div>
       {% endfor %}
       {% else %}

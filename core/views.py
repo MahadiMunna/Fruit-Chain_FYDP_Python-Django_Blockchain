@@ -7,7 +7,7 @@ from .forms import ContactForm
 
 # Create your views here.
 def home(request):
-    data = FruitModel.objects.filter(flash_sale=False)
+    data = FruitModel.objects.filter(flash_sale=False).order_by("?")
     flashsale = FruitModel.objects.filter(flash_sale=True)
     return render(request, 'home.html', {'data':data, 'flashsale':flashsale })
 

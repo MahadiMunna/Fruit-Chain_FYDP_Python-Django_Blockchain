@@ -83,7 +83,7 @@
                     <td>
                         <ul style="padding: 0;">
                             {% for item in order.order_items.all %}
-                            <li>{{ item.item.name }} x {{ item.quantity }}(kg)</li>
+                            <li>{{ item.item.name }}-{{ item.item.unit }} x {{ item.quantity }}</li>
                             {% endfor %}
                         </ul>
                     </td>
@@ -108,7 +108,7 @@
                 {% endif %}
                 {% endfor %}
                 {% else %}
-                <h4 class="text-center text-secondary" style="margin-top: 100px;">You don't have any orders!</h4>
+                <h4 class="text-center text-secondary" style="margin-top: 100px;">No orders found!</h4>
                 {% endif %}
             </tbody>
         </table>

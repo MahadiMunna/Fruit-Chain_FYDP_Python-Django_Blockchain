@@ -8,7 +8,7 @@
     <h4 class="fw-bold my-3 rounded">Your wishlist</h4>
     <div class="row justify-content-start gap-2">
 
-
+        {% if fruits %}
         {% for fruit in fruits %}
 
         <div class="card mb-3" style="width: 370px; height: fit-content;">
@@ -42,9 +42,9 @@
                             {% else %}
                             {% if fruit.fruit.discount > 0 %}
                             <small class="fw-bold"><s>{{fruit.fruit.price}}৳</s> <span
-                                    class="text-danger">{{fruit.fruit.get_discounted_price}}৳/kg</span> </small><br>
+                                    class="text-danger">{{fruit.fruit.get_discounted_price}}৳ per {{fruit.unit}}</span> </small><br>
                             {% else %}
-                            <small class="fw-bold">{{fruit.fruit.price}}৳/kg</small><br>
+                            <small class="fw-bold">{{fruit.fruit.price}}৳ per {{fruit.unit}}</small><br>
                             {% endif %}
                             {% endif %}
 
@@ -66,7 +66,9 @@
         </div>
 
         {% endfor %}
-
+        {% else %}
+        <h5 class="text-danger">Your wishlist is empty</h5>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

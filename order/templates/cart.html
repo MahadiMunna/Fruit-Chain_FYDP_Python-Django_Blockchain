@@ -19,7 +19,7 @@
                     <th>Image</th>
                     <th>Item Name</th>
                     <th>Price</th>
-                    <th>Quantity (kg)</th>
+                    <th>Quantity</th>
                     <th>Total</th>
                     <th>Remove Item</th>
                 </tr>
@@ -37,26 +37,15 @@
                             class="img-fluid rounded" alt="No Image">
                         {% endif %}
                     </td>
-                    <td>{{ cart.item.name }}</td>
+                    <td style="font-size: 13px;"><a style="text-decoration: none;" href="{% url 'details' id=cart.item.id %}">{{ cart.item.name }}-{{ cart.item.unit }}</a></td>
+                    
                     {% if cart.item.discount > 0 %}
                     <td><s>{{ cart.item.price }}</s>৳ <br><span class="text-danger">{{ cart.item.get_discounted_price }}৳</span></td>
                     {% else %}
                     <td>{{ cart.item.price }}৳</td>
                     {% endif %}
                     <td>
-                        <div class="text-center">
-                                <p class="m-0">
-                                    <span class="input-group-btn">
-                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}"
-                                            class="btn btn-outline-secondary btn-sm">-</a>
-                                    </span>
-                                    <input style="width: 30px;" type="text" class="text-center" value="{{ cart.quantity }}" readonly>
-                                    <span class="input-group-btn">
-                                        <a href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}"
-                                            class="btn btn-outline-secondary btn-sm">+</a>
-                                    </span>
-                                </p>
-                        </div>
+                        <small><a href="{% url 'increase-decrease' pk=cart.item.id type='decrease'  %}"><i class="fa-solid fa-minus"></i></a><input style="width: 20px;" type="text" class="text-center"  value="{{ cart.quantity }}" readonly><a class="ms-1" href="{% url 'increase-decrease' pk=cart.item.id type='increase'  %}"><i class="fa-solid fa-plus"></i></a></small>
                     </td>
                     <td>{{ cart.get_total }}৳</td>
                     <td><a href="{% url 'remove' pk=cart.item.id %}" class="btn btn-danger manage_order_btn">Remove</a></td>
@@ -108,9 +97,9 @@
                             <small class="card-text ">{{fruit.description | truncatewords:6}} <a class="text-decoration-none"
                                     href="{% url 'details' id=fruit.id %}">view</a></small><br>
                             {% if fruit.discount > 0 %}
-                            <small class="fw-bold"><s>{{fruit.price}}৳</s> <span  class="text-danger">{{fruit.get_discounted_price}}৳/kg</span> </small><br>
+                            <small class="fw-bold"><s>{{fruit.price}}৳</s> <span  class="text-danger">{{fruit.get_discounted_price}}৳ per {{fruit.unit}}</span> </small><br>
                                 {% else %}
-                            <small class="fw-bold">{{fruit.price}}৳/kg</small><br>
+                            <small class="fw-bold">{{fruit.price}}৳ per {{fruit.unit}}</small><br>
                             {% endif %}
                             <div class="d-flex justify-content-between align-items-center mt-2">
                                 <a class="card-btn btn btn-dark" href="{% url 'add_to_wishlist' fruit.id %}">Add to

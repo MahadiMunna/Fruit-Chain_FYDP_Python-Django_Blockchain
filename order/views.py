@@ -44,7 +44,7 @@ def add_to_cart(request, pk):
 
 @login_required
 def cart_view(request):
-    data = FruitModel.objects.all()
+    data = FruitModel.objects.all().order_by("?")
     carts = Cart.objects.filter(user=request.user, purchased=False)
     orders = Order.objects.filter(user=request.user, ordered=False)
     if carts.exists() and orders.exists():
