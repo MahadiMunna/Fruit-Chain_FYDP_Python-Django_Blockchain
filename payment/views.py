@@ -23,11 +23,10 @@ class CheckoutTemplateView(TemplateView):
     def get(self, request, *args, **kwargs):
         carts = Cart.objects.filter(user=request.user, purchased=False)
         orders = Order.objects.filter(user=request.user, ordered=False)
+        order = None
         if carts.exists() and orders.exists():
             order = orders[0]
-            context = {
-                
-            }
+            
         saved_address = BillingAddress.objects.get_or_create(user=request.user or None)
         saved_address = saved_address[0]
         form = BillingAddressForm(instance=saved_address)

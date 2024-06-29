@@ -94,6 +94,7 @@
     <div style="width: 47.5%;">
         <div class="mt-3">
             <h2 class="btn btn-dark text-center w-100 shadow-lg">Shipping Details</h2>
+            {% if carts %}
                 <div class="form d-flex justify-content-center align-items-center">
                     <div class="d-flex flex-column justify-content-center p-4 rounded rounded shadow-lg" style=" background: #F2F2F2;">
                         <form enctype="multipart/form-data" action="" method="post">
@@ -183,6 +184,9 @@
                         </form>
                     </div>
                 </div>
+                {% else %}
+                <h5 class="text-center text-danger">Add fruit first!</h5>
+                {% endif %}
             </div>
         </div>
     </div>
