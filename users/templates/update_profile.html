@@ -35,13 +35,13 @@
                     </div>
                     <div class="input-box">
                         <div class="input-box">
-                            <label for="uploadImage">Fruit Image:</label>
-                            <input type="file" id="uploadImage" class="input-field" name="image" onchange="displayImage()">
+                            <label for="uploadImage">Profile Image:</label>
+                            <input type="file" id="uploadImage" class="input-field" name="profile_image" onchange="displayImage()">
                             <label class="up-image-label overflow-auto" for="uploadImage">
-                                {% if form.instance.image %}
-                                <span class="image-label "><i class="fa-solid fa-upload me-2"></i>{{ form.instance.image.name }}</span>
+                                {% if form.instance.account.profile_image %}
+                                <span class="image-label "><i class="fa-solid fa-upload me-2"></i>{{ form.instance.account.profile_image.name }}</span>
                                 {% else %}
-                                <span class="image-label "><i class="fa-solid fa-upload me-2"></i>Upload fruit image</span>
+                                <span class="image-label "><i class="fa-solid fa-upload me-2"></i>Upload proofile image</span>
                                 {% endif %}
                             </label>
                         </div>

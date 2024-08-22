@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import FruitForm, VendorForm, CommentForm
 from order.models import Order
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from blockchain import get_fruit
 from django.core.paginator import Paginator
 
@@ -114,7 +115,7 @@ def add_fruit(request):
         return render(request, 'add_fruit.html', {'form': fruit_form})
     return render(request, 'add_fruit.html', {'form': fruit_form})
 
-
+@method_decorator(login_required, name='dispatch')
 class EditFruitView(View):
     template_name = 'edit_fruit.html'
     pk_url_kwarg = 'id'
